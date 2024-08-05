@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  font-family: system-ui, sans-serif;
+  /* color-scheme: light dark; */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #5cc8f7;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  animation: spin 1s linear infinite;
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+} */
+
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+}
+
+.node {
+  white-space: nowrap;
+}
+
+.node rect,
+.node circle,
+.node ellipse {
+  stroke: #fff;
+  fill: #fff;
+  /* border-radius: 60px; */
+  /* stroke-width: 10px; */
+}
+
+.cluster rect {
+  /* stroke: #fff; */
+  /* fill: #fff; */
+  /* fill-opacity: 1; */
+  /* stroke-width: 8px; */
+}
+
+.edgePath path.path {
+  stroke: #999;
+  stroke-width: 2px;
+  opacity: 0.5;
+}
