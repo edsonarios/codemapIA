@@ -123,8 +123,6 @@ export default function Home() {
               <li key={index}>
                 <a
                   href={`/view?${paramViewPageName}=${getNameRepository(repo.url)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="text-[#5cc8f7] hover:underline"
                 >
                   {`${repo.name} - ${repo.url}`}

@@ -156,18 +156,18 @@ export default function GraphPage() {
 
   useEffect(() => {
     const fetchStructure = async () => {
-      console.log(paramRepository)
+      // console.log(paramRepository)
       try {
         const res = await fetch(
           `/api/structure?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
         )
-        console.log(res)
+        // console.log(res)
         if (!res.ok) {
           console.error('Error fetching structure:', res)
           return
         }
         const data = await res.json()
-        console.log(data)
+        // console.log(data)
         setParamRepoName(paramRepository)
         setStructure(data)
       } catch (error) {
@@ -196,6 +196,12 @@ export default function GraphPage() {
         keyInfoPanel={panelInfo}
         setKeyInfoPanel={setPanelInfo}
       />
+      <a
+        className=" absolute top-6 left-24 text-xl text-[#5cc8f7]  p-2 border-b-2 border-[#5cc8f7] rounded-md hover:bg-zinc-700"
+        href="/"
+      >
+        Home Page
+      </a>
 
       <h1 className="text-4xl mt-4">CodeMap AI</h1>
       <h2 className="text-center text-xl mt-2 text-balance text-[#5cc8f7]">
