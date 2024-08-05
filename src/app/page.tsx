@@ -13,7 +13,9 @@ export interface Repository {
 export default function Home() {
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState('')
+  const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -24,9 +26,24 @@ export default function Home() {
     fetchRepos()
   }, [])
 
+  const reviewError = () => {
+    if (repoUrl === '') {
+      setErrorRepoUrl('The url is required')
+      return false
+    }
+    if (!repoUrl.startsWith('https://github.com/')) {
+      setErrorRepoUrl('The url should be from GitHub')
+      return false
+    }
+    return true
+  }
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
-    // console.log(repoUrl)
+    if (!reviewError()) {
+      return
+    }
+    setLoading(true)
     try {
       const res = await fetch('/api/allRepositories', {
         method: 'POST',
@@ -35,21 +52,21 @@ export default function Home() {
         },
         body: JSON.stringify({ url: repoUrl }),
       })
-      console.log(res)
+      // console.log(res)
       const data = await res.json()
-      console.log(data)
+      // console.log(data)
       if (res.status === 200) {
         // console.log('ok')
         router.push(
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
         )
       } else {
-        alert(`Error to analise: ${data.url}`)
+        setErrorRepoUrl(data.error || 'Error')
       }
-    } catch (error) {
-      console.error('Error analyzing repository:', error)
-      alert('Error analyzing repository')
+    } catch (error: any) {
+      setErrorRepoUrl(error.error || 'Error')
     }
+    setLoading(false)
   }
 
   return (
@@ -69,21 +86,35 @@ export default function Home() {
         onSubmit={handleSubmit}
         className="flex flex-row p-2 items-center w-full justify-center"
       >
-        <h4>Url Repository</h4>
-        <input
-          className="ml-4 p-2 w-[50%] text-black"
-          type="text"
-          value={repoUrl}
-          onChange={(e) => setRepoUrl(e.target.value)}
-          placeholder="https://github.com/midudev/hackaton-vercel-2024"
-        />
+        <h4>Url GitHub Repository</h4>
+        <div className="relative w-[50%] ml-4 flex flex-col items-start">
+          <input
+            className="p-2 w-full text-black"
+            type="text"
+            value={repoUrl}
+            onChange={(e) => {
+              setErrorRepoUrl('')
+              setRepoUrl(e.target.value)
+            }}
+            placeholder="https://github.com/midudev/hackaton-vercel-2024"
+          />
+          {errorRepoUrl !== '' && (
+            <p className="text-red-500 absolute mt-11">{errorRepoUrl}</p>
+          )}
+        </div>
         <button
           type="submit"
-          className="ml-4 p-2 bg-blue-500 hover:bg-blue-400 text-white rounded"
+          className="ml-4 p-2 bg-blue-500 hover:bg-blue-400 text-white rounded w-24 flex items-center justify-center"
         >
-          Analyze
+          {loading ? (
+            <div id="spinner" className="loader ml-2"></div>
+          ) : (
+            'Analyze'
+          )}
+          {/* Analyze */}
         </button>
       </form>
+
       <div>
         <div className="mt-8 w-full">
           <h4 className="text-2xl mb-4">Analyzed Repositories</h4>

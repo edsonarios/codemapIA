@@ -22,10 +22,10 @@
   border: 5px solid #f3f3f3;
   border-top: 5px solid #5cc8f7;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   animation: spin 1s linear infinite;
-  display: none;
+  /* display: none; */
 }
 
 @keyframes spin {

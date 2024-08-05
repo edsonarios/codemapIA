@@ -24,6 +24,7 @@ export function PanelInformation({
   } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [codeContent, setCodeContent] = useState<string>('')
   const [detailByIA, setDetailByIA] = useState<string>('')
+  const [loading, setLoading] = useState(false)
 
   //! Update content by keyInfoPanel
   useEffect(() => {
@@ -53,14 +54,11 @@ export function PanelInformation({
   }, [paramRepoName])
 
   const handledGetDetailsByIA = async (force = false) => {
-    const spiner = document.getElementById('spinner')
+    setLoading(true)
     if (!keyInfoPanel) return
     const details = fileDetails[keyInfoPanel]
     if (force) setDetailByIA(' ')
     if (!details || force) {
-      if (spiner) {
-        spiner.style.display = 'block'
-      }
       const nameFile = keyInfoPanel
       const contentFile = contentFiles[keyInfoPanel]
       //! Get details by IA
@@ -154,9 +152,7 @@ Este es un ejemplo de output que quiero,
         },
       )
       setFileDetails({ ...fileDetails, [keyInfoPanel]: detailsResponse })
-      if (spiner) {
-        spiner.style.display = 'none'
-      }
+      setLoading(false)
     } else {
       setDetailByIA(details)
     }
@@ -197,7 +193,7 @@ Este es un ejemplo de output que quiero,
                 ? 'Update Explanation'
                 : 'Get Explanation From File (By IA)'}
             </button>
-            <div id="spinner" className="loader ml-2"></div>
+            {loading && <div id="spinner" className="loader ml-2"></div>}
           </div>
           <h4 className="text-xs mt-1 text-gray-200">
             Using ChatGPT, model: gpt-3.5-turbo-0125

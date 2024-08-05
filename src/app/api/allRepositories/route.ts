@@ -52,7 +52,14 @@ export async function POST(req: NextRequest) {
       saveRepos(repositories)
       return NextResponse.json({ url: repoName })
     }
-  } catch (error) {
+  } catch (error: any) {
+    // console.log(error)
+    if (error?.message.includes('Repository not found')) {
+      return NextResponse.json(
+        { error: 'Repository not found' },
+        { status: 404 },
+      )
+    }
     return NextResponse.json({ error: 'Error writing file' }, { status: 500 })
   }
 }
