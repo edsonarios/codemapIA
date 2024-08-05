@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { paramViewPageName } from '@/components/utils/constants'
+import { getNameRepository } from '@/components/utils/utils'
 
 export interface Repository {
   name: string
@@ -90,7 +91,7 @@ export default function Home() {
             {analyzedRepos.map((repo, index) => (
               <li key={index}>
                 <a
-                  href={repo.url}
+                  href={`/view?${paramViewPageName}=${getNameRepository(repo.url)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[#5cc8f7] hover:underline"
