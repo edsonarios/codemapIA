@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { paramViewPageName } from '@/components/utils/constants'
+import { routePath } from '../utils'
 
 export async function GET(req: NextRequest) {
   try {
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest) {
     //   `src/app/api/data/processedRepositories/${repoName}/fileDetails.json`,
     // )
     const filePath = path.resolve(
-      `/tmp/processedRepositories/${repoName}/fileDetails.json`,
+      `${routePath}/processedRepositories/${repoName}/fileDetails.json`,
     )
     const data = fs.readFileSync(filePath, 'utf8')
     return NextResponse.json(JSON.parse(data))
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     //   `src/app/api/data/processedRepositories/${repoName}/fileDetails.json`,
     // )
     const filePath = path.resolve(
-      `/tmp/processedRepositories/${repoName}/fileDetails.json`,
+      `${routePath}/processedRepositories/${repoName}/fileDetails.json`,
     )
     const data = fs.readFileSync(filePath, 'utf8')
     const jsonData = JSON.parse(data)

@@ -7,10 +7,11 @@ import { processRepository } from '../processRepository/processRepository'
 import { exec } from 'child_process'
 import axios from 'axios'
 import extract from 'extract-zip'
-import { routePath } from '../utils'
+import { formatRepositoryName, routePath } from '../utils'
 
 // const folderPath = 'src/app/api/data/'
-const folderPath = '/tmp/'
+// const folderPath = '/tmp/'
+const folderPath = routePath
 
 // const filePath = path.resolve(`${folderPath}repositories.json`)
 // const filePath = path.resolve('src/app/api/data/repositories.json')
@@ -67,25 +68,25 @@ export async function POST(req: NextRequest) {
     console.log('cloneDir:', cloneDir)
     console.log('zipPath:', zipPath)
 
-    const lsOutput = await runCommand('ls -la /tmp')
-    console.log('lsOutput:', lsOutput)
+    // const lsOutput = await runCommand('ls -la /tmp')
+    // console.log('lsOutput:', lsOutput)
 
     // Intentar crear un directorio de prueba para verificar permisos
-    const testDir = path.join('/tmp/', 'test-permissions')
-    try {
-      fs.mkdirSync(testDir, { recursive: true })
-      fs.rmdirSync(testDir) // Eliminar el directorio de prueba después de la verificación
-    } catch (error: any) {
-      console.log('Error creating test directory:', error)
-      return NextResponse.json(
-        {
-          error: 'Insufficient permissions to create directory',
-          message: error.message,
-          lsOutput,
-        },
-        { status: 500 },
-      )
-    }
+    // const testDir = path.join('/tmp/', 'test-permissions')
+    // try {
+    //   fs.mkdirSync(testDir, { recursive: true })
+    //   fs.rmdirSync(testDir) // Eliminar el directorio de prueba después de la verificación
+    // } catch (error: any) {
+    //   console.log('Error creating test directory:', error)
+    //   return NextResponse.json(
+    //     {
+    //       error: 'Insufficient permissions to create directory',
+    //       message: error.message,
+    //       lsOutput,
+    //     },
+    //     { status: 500 },
+    //   )
+    // }
 
     try {
       if (!fs.existsSync(cloneDir)) {
@@ -97,7 +98,6 @@ export async function POST(req: NextRequest) {
         {
           error: 'Error creating directory',
           message: error.message,
-          lsOutput,
         },
         { status: 500 },
       )
@@ -132,7 +132,7 @@ export async function POST(req: NextRequest) {
       })
 
       const newRepo: Repository = {
-        name: url.split('/').pop() as string,
+        name: formatRepositoryName(repositoryName),
         url,
         description: '',
       }

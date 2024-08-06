@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import * as babelParser from '@babel/parser'
 import traverse from '@babel/traverse'
+import { routePath } from '../utils'
 
 const ignoreFolders = [
   'node_modules',
@@ -153,7 +154,7 @@ const ensureDirectoryExistence = (filePath: string) => {
 
 export async function processRepository(repositoryName: string) {
   // const fileSrc = 'src/app/api/data'
-  const fileSrc = '/tmp/'
+  const fileSrc = `${routePath}`
 
   const repositoryPath = path.resolve(
     `${fileSrc}/clonedRepositories/${repositoryName}/`,
