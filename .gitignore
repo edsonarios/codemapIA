@@ -35,5 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# src/app/api/data/clonedRepositories/
-# src/app/api/data/processedRepositories/
+src/app/api/data/clonedRepositories/
+src/app/api/data/processedRepositories/
