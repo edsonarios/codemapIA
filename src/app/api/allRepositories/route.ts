@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const nameUser = repoName.split('/')[0]
     const repositoryName = repoName.split('/')[1]
     const cloneDir = path.resolve(folderPath, 'clonedRepositories', nameUser)
-    const zipPath = path.join(
+    const zipPath = path.resolve(
       folderPath,
       'clonedRepositories',
       `${repoName}.zip`,
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
         // console.log('Repository already cloned:', cloneDir)
       }
       await processRepository(`${repoName}-main`)
-      fs.rmdirSync(path.join(cloneDir, `${repositoryName}-main`), {
+      fs.rmdirSync(path.resolve(cloneDir, `${repositoryName}-main`), {
         recursive: true,
       })
 
