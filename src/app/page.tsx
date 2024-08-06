@@ -31,6 +31,10 @@ export default function Home() {
       setErrorRepoUrl('The url is required')
       return false
     }
+    if (repoUrl.length > 200) {
+      setErrorRepoUrl('The url is too long')
+      return false
+    }
     if (!repoUrl.startsWith('https://github.com/')) {
       setErrorRepoUrl('The url should be from GitHub')
       return false
@@ -43,6 +47,7 @@ export default function Home() {
     if (!reviewError()) {
       return
     }
+    setErrorRepoUrl('')
     setLoading(true)
     try {
       const res = await fetch('/api/allRepositories', {

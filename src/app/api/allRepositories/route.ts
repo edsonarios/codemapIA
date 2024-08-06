@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
       )
     }
     return NextResponse.json(
-      { error: 'Error writing file', message: error.message },
+      { error: 'Repository not found', message: error.message },
       { status: 500 },
     )
   }
