@@ -50,11 +50,14 @@ export async function POST(req: NextRequest) {
       `${repoName}.zip`,
     )
 
-    const lsOutput = await runCommand('ls -la')
+    console.log('cloneDir:', cloneDir)
+    console.log('zipPath:', zipPath)
+
+    const lsOutput = await runCommand('ls -la /tmp')
     console.log('lsOutput:', lsOutput)
 
     // Intentar crear un directorio de prueba para verificar permisos
-    const testDir = path.join(cloneDir, 'test-permissions')
+    const testDir = path.join('/tmp/', 'test-permissions')
     try {
       fs.mkdirSync(testDir, { recursive: true })
       fs.rmdirSync(testDir) // Eliminar el directorio de prueba después de la verificación
@@ -71,12 +74,8 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const lsOutput = await runCommand('ls -la')
-      console.log('lsOutput:', lsOutput)
       if (!fs.existsSync(cloneDir)) {
-        fs.mkdirSync(cloneDir, {
-          recursive: true,
-        })
+        fs.mkdirSync(cloneDir, { recursive: true })
       }
     } catch (error: any) {
       console.log('Error creating directory:', error)
@@ -84,8 +83,7 @@ export async function POST(req: NextRequest) {
         {
           error: 'Error creating directory',
           message: error.message,
-          lsOutput: error.lsOutput,
-          exist: fs.existsSync(cloneDir),
+          lsOutput,
         },
         { status: 500 },
       )
@@ -97,23 +95,10 @@ export async function POST(req: NextRequest) {
     if (existingRepo) {
       return NextResponse.json({ url: repoName })
     } else {
-      // console.log('Creating folder:', !fs.existsSync(path.join(cloneDir)))
-
-      // if (!fs.existsSync(cloneDir)) {
-      //   console.log('Creating folder:', repoName)
-      //   fs.mkdirSync(cloneDir, {
-      //     recursive: true,
-      //   })
-      // }
       if (fs.existsSync(cloneDir)) {
-        fs.mkdirSync(cloneDir, {
-          recursive: true,
-        })
         console.log('zipPath:', zipPath)
         console.log('cloneDir:', cloneDir)
-        // console.log('Cloning repository:', url)
-        // await git.clone(url, cloneDir)
-        // await runCommand(`git clone ${url} ${cloneDir}`)
+
         const downloadUrl = `https://github.com/${repoName}/archive/refs/heads/main.zip`
         console.log('downloadUrl:', downloadUrl)
         const response = await axios.get(downloadUrl, {
@@ -122,14 +107,11 @@ export async function POST(req: NextRequest) {
         console.log('response:', response)
         fs.writeFileSync(zipPath, response.data)
 
-        // Extraer el archivo zip
         await extract(zipPath, { dir: cloneDir })
 
-        // Eliminar el archivo zip
         fs.unlinkSync(zipPath)
-      } else {
-        // console.log('Repository already cloned:', cloneDir)
       }
+
       await processRepository(`${repoName}-main`)
       fs.rmdirSync(path.resolve(cloneDir, `${repositoryName}-main`), {
         recursive: true,
