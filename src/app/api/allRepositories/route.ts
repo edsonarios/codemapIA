@@ -19,8 +19,15 @@ const saveRepos = (repos: Repository[]) => {
   fs.writeFileSync(filePath, JSON.stringify(repos, null, 2), 'utf8')
 }
 
+const ensureFileExists = (filePath: string) => {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify([]), 'utf8')
+  }
+}
+
 export async function GET() {
   try {
+    ensureFileExists(filePath)
     const data = fs.readFileSync(filePath, 'utf8')
     return NextResponse.json(JSON.parse(data) as Repository[])
   } catch (error) {
