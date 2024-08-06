@@ -35,10 +35,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: repoName })
     } else {
       if (!fs.existsSync(cloneDir)) {
-        console.log('Cloning repository:', url)
+        // console.log('Cloning repository:', url)
         await git.clone(url, cloneDir)
       } else {
-        console.log('Repository already cloned:', cloneDir)
+        // console.log('Repository already cloned:', cloneDir)
       }
       await processRepository(repoName)
       fs.rmdirSync(cloneDir, { recursive: true })
@@ -60,6 +60,9 @@ export async function POST(req: NextRequest) {
         { status: 404 },
       )
     }
-    return NextResponse.json({ error: 'Error writing file' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Error writing file', message: error.message },
+      { status: 500 },
+    )
   }
 }

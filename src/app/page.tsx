@@ -52,9 +52,9 @@ export default function Home() {
         },
         body: JSON.stringify({ url: repoUrl }),
       })
-      // console.log(res)
+      console.log(res)
       const data = await res.json()
-      // console.log(data)
+      console.log(data)
       if (res.status === 200) {
         // console.log('ok')
         router.push(
