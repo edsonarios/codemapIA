@@ -49,6 +49,11 @@ export async function POST(req: NextRequest) {
       'clonedRepositories',
       `${repoName}.zip`,
     )
+    if (!fs.existsSync(cloneDir)) {
+      fs.mkdirSync(cloneDir, {
+        recursive: true,
+      })
+    }
 
     const data = fs.readFileSync(filePath, 'utf8')
     const repositories = JSON.parse(data) as Repository[]
