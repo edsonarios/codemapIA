@@ -56,6 +56,9 @@ export async function POST(req: NextRequest) {
     if (existingRepo) {
       return NextResponse.json({ url: repoName })
     } else {
+      fs.mkdirSync(path.join(cloneDir), {
+        recursive: true,
+      })
       if (!fs.existsSync(path.join(cloneDir))) {
         console.log('Creating folder:', repoName)
         fs.mkdirSync(path.join(cloneDir), {
@@ -75,16 +78,9 @@ export async function POST(req: NextRequest) {
         })
         console.log('response:', response)
         fs.writeFileSync(zipPath, response.data)
+
         // Extraer el archivo zip
         await extract(zipPath, { dir: cloneDir })
-        // console.log(`${path.join(cloneDir, repositoryName)}-main`)
-        // if (fs.existsSync(cloneDir)) {
-        //   console.log(
-        //     'Renaming folder:',
-        //     `${path.join(cloneDir, repositoryName)}-main`,
-        //   )
-        //   fs.renameSync(`${path.join(cloneDir, repositoryName)}-main`, cloneDir)
-        // }
 
         // Eliminar el archivo zip
         fs.unlinkSync(zipPath)
