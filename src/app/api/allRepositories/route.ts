@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         console.log('Repository already cloned:', cloneDir)
       }
       await processRepository(repoName)
-      // fs.rmdirSync(cloneDir, { recursive: true })
+      fs.rmdirSync(cloneDir, { recursive: true })
 
       const newRepo: Repository = {
         name: url.split('/').pop() as string,
