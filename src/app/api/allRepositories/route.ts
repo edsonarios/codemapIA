@@ -39,19 +39,19 @@ export async function GET() {
   }
 }
 
-const runCommand = (command: string) => {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(stdout || stderr)
-      }
-    })
-  })
-}
+// const runCommand = (command: string) => {
+//   return new Promise((resolve, reject) => {
+//     exec(command, (error, stdout, stderr) => {
+//       if (error) {
+//         reject(error)
+//       } else {
+//         resolve(stdout || stderr)
+//       }
+//     })
+//   })
+// }
 
-const git = simpleGit()
+// const git = simpleGit()
 export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json()
