@@ -49,6 +49,27 @@ export async function POST(req: NextRequest) {
       'clonedRepositories',
       `${repoName}.zip`,
     )
+
+    const lsOutput = await runCommand('ls -la')
+    console.log('lsOutput:', lsOutput)
+
+    // Intentar crear un directorio de prueba para verificar permisos
+    const testDir = path.join(cloneDir, 'test-permissions')
+    try {
+      fs.mkdirSync(testDir, { recursive: true })
+      fs.rmdirSync(testDir) // Eliminar el directorio de prueba después de la verificación
+    } catch (error: any) {
+      console.log('Error creating test directory:', error)
+      return NextResponse.json(
+        {
+          error: 'Insufficient permissions to create directory',
+          message: error.message,
+          lsOutput,
+        },
+        { status: 500 },
+      )
+    }
+
     try {
       const lsOutput = await runCommand('ls -la')
       console.log('lsOutput:', lsOutput)
@@ -84,7 +105,7 @@ export async function POST(req: NextRequest) {
       //     recursive: true,
       //   })
       // }
-      if (!fs.existsSync(cloneDir)) {
+      if (fs.existsSync(cloneDir)) {
         fs.mkdirSync(cloneDir, {
           recursive: true,
         })
