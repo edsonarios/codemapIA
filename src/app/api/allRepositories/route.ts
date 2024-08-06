@@ -57,16 +57,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: repoName })
     } else {
       // console.log('Creating folder:', !fs.existsSync(path.join(cloneDir)))
-      // fs.mkdirSync(cloneDir, {
-      //   recursive: true,
-      // })
+
+      // if (!fs.existsSync(cloneDir)) {
+      //   console.log('Creating folder:', repoName)
+      //   fs.mkdirSync(cloneDir, {
+      //     recursive: true,
+      //   })
+      // }
       if (!fs.existsSync(cloneDir)) {
-        console.log('Creating folder:', repoName)
         fs.mkdirSync(cloneDir, {
           recursive: true,
         })
-      }
-      if (fs.existsSync(cloneDir)) {
         console.log('zipPath:', zipPath)
         console.log('cloneDir:', cloneDir)
         // console.log('Cloning repository:', url)
