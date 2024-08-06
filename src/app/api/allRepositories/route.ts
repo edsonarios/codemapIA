@@ -4,6 +4,7 @@ import path from 'path'
 import simpleGit from 'simple-git'
 import { Repository } from '@/app/page'
 import { processRepository } from '../processRepository/processRepository'
+import { exec } from 'child_process'
 
 const folderPath = 'src/app/api/data/'
 const filePath = path.resolve(`${folderPath}repositories.json`)
@@ -21,6 +22,18 @@ export async function GET() {
   }
 }
 
+const runCommand = (command: string) => {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(stdout || stderr)
+      }
+    })
+  })
+}
+
 const git = simpleGit()
 export async function POST(req: NextRequest) {
   try {
@@ -36,7 +49,8 @@ export async function POST(req: NextRequest) {
     } else {
       if (!fs.existsSync(cloneDir)) {
         // console.log('Cloning repository:', url)
-        await git.clone(url, cloneDir)
+        // await git.clone(url, cloneDir)
+        await runCommand(`git clone ${url} ${cloneDir}`)
       } else {
         // console.log('Repository already cloned:', cloneDir)
       }
