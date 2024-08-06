@@ -156,14 +156,14 @@ export async function processRepository(repositoryName: string) {
   const repositoryPath = path.resolve(
     `${fileSrc}/clonedRepositories/${repositoryName}/`,
   )
-  const structurePath = path.resolve(
+  let structurePath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryName}/structure.json`,
   )
-  const contentFilesPath = path.resolve(
+  let contentFilesPath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryName}/contentFiles.json`,
   )
 
-  const fileDetailsPath = path.resolve(
+  let fileDetailsPath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryName}/fileDetails.json`,
   )
   // console.log(`Processing repository: ${repositoryPath}`)
@@ -176,6 +176,17 @@ export async function processRepository(repositoryName: string) {
 
   const contentByFile = getContentFiles(repositoryPath, repositoryPath, {})
   // console.log(contentByFile)
+
+  structurePath = path.resolve(
+    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/structure.json`,
+  )
+  contentFilesPath = path.resolve(
+    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/contentFiles.json`,
+  )
+
+  fileDetailsPath = path.resolve(
+    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/fileDetails.json`,
+  )
 
   ensureDirectoryExistence(structurePath)
   ensureDirectoryExistence(contentFilesPath)

@@ -12,7 +12,9 @@ export interface Repository {
 
 export default function Home() {
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
-  const [repoUrl, setRepoUrl] = useState('')
+  const [repoUrl, setRepoUrl] = useState(
+    'https://github.com/midudev/hackaton-vercel-2024',
+  )
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
   const [loading, setLoading] = useState(false)

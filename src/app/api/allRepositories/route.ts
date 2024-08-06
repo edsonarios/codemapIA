@@ -5,6 +5,8 @@ import simpleGit from 'simple-git'
 import { Repository } from '@/app/page'
 import { processRepository } from '../processRepository/processRepository'
 import { exec } from 'child_process'
+import axios from 'axios'
+import extract from 'extract-zip'
 
 const folderPath = 'src/app/api/data/'
 const filePath = path.resolve(`${folderPath}repositories.json`)
@@ -39,7 +41,14 @@ export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json()
     const repoName = url.replace('https://github.com/', '')
-    const cloneDir = path.join(folderPath, 'clonedRepositories', repoName)
+    const nameUser = repoName.split('/')[0]
+    const repositoryName = repoName.split('/')[1]
+    const cloneDir = path.resolve(folderPath, 'clonedRepositories', nameUser)
+    const zipPath = path.join(
+      folderPath,
+      'clonedRepositories',
+      `${repoName}.zip`,
+    )
 
     const data = fs.readFileSync(filePath, 'utf8')
     const repositories = JSON.parse(data) as Repository[]
@@ -47,15 +56,45 @@ export async function POST(req: NextRequest) {
     if (existingRepo) {
       return NextResponse.json({ url: repoName })
     } else {
-      if (!fs.existsSync(cloneDir)) {
+      if (!fs.existsSync(path.join(cloneDir))) {
+        console.log('Creating folder:', repoName)
+        fs.mkdirSync(path.join(cloneDir), {
+          recursive: true,
+        })
+      }
+      if (fs.existsSync(cloneDir)) {
+        console.log('zipPath:', zipPath)
+        console.log('cloneDir:', cloneDir)
         // console.log('Cloning repository:', url)
         // await git.clone(url, cloneDir)
-        await runCommand(`git clone ${url} ${cloneDir}`)
+        // await runCommand(`git clone ${url} ${cloneDir}`)
+        const downloadUrl = `https://github.com/${repoName}/archive/refs/heads/main.zip`
+        console.log('downloadUrl:', downloadUrl)
+        const response = await axios.get(downloadUrl, {
+          responseType: 'arraybuffer',
+        })
+        console.log('response:', response)
+        fs.writeFileSync(zipPath, response.data)
+        // Extraer el archivo zip
+        await extract(zipPath, { dir: cloneDir })
+        // console.log(`${path.join(cloneDir, repositoryName)}-main`)
+        // if (fs.existsSync(cloneDir)) {
+        //   console.log(
+        //     'Renaming folder:',
+        //     `${path.join(cloneDir, repositoryName)}-main`,
+        //   )
+        //   fs.renameSync(`${path.join(cloneDir, repositoryName)}-main`, cloneDir)
+        // }
+
+        // Eliminar el archivo zip
+        fs.unlinkSync(zipPath)
       } else {
         // console.log('Repository already cloned:', cloneDir)
       }
-      await processRepository(repoName)
-      fs.rmdirSync(cloneDir, { recursive: true })
+      await processRepository(`${repoName}-main`)
+      fs.rmdirSync(path.join(cloneDir, `${repositoryName}-main`), {
+        recursive: true,
+      })
 
       const newRepo: Repository = {
         name: url.split('/').pop() as string,
@@ -67,7 +106,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: repoName })
     }
   } catch (error: any) {
-    // console.log(error)
+    console.log(error)
     if (error?.message.includes('Repository not found')) {
       return NextResponse.json(
         { error: 'Repository not found' },
