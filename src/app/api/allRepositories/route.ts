@@ -49,10 +49,18 @@ export async function POST(req: NextRequest) {
       'clonedRepositories',
       `${repoName}.zip`,
     )
-    if (!fs.existsSync(cloneDir)) {
-      fs.mkdirSync(cloneDir, {
-        recursive: true,
-      })
+    try {
+      if (!fs.existsSync(cloneDir)) {
+        fs.mkdirSync(cloneDir, {
+          recursive: true,
+        })
+      }
+    } catch (error: any) {
+      console.log(error)
+      return NextResponse.json(
+        { error: 'Error creating file', message: error.message },
+        { status: 500 },
+      )
     }
 
     const data = fs.readFileSync(filePath, 'utf8')
