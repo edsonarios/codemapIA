@@ -63,9 +63,11 @@ export default function Home() {
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
         )
       } else {
+        console.log(data)
         setErrorRepoUrl(data.error || 'Error')
       }
     } catch (error: any) {
+      console.log(error)
       setErrorRepoUrl(error.error || 'Error')
     }
     setLoading(false)

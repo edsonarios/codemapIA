@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
           error: 'Error creating directory',
           message: error.message,
           lsOutput: error.lsOutput,
+          exist: fs.existsSync(cloneDir),
         },
         { status: 500 },
       )
