@@ -50,15 +50,21 @@ export async function POST(req: NextRequest) {
       `${repoName}.zip`,
     )
     try {
+      const lsOutput = await runCommand('ls -la')
+      console.log('lsOutput:', lsOutput)
       if (!fs.existsSync(cloneDir)) {
         fs.mkdirSync(cloneDir, {
           recursive: true,
         })
       }
     } catch (error: any) {
-      console.log(error)
+      console.log('Error creating directory:', error)
       return NextResponse.json(
-        { error: 'Error creating file', message: error.message },
+        {
+          error: 'Error creating directory',
+          message: error.message,
+          lsOutput: error.lsOutput,
+        },
         { status: 500 },
       )
     }
