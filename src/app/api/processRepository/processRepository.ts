@@ -152,7 +152,9 @@ const ensureDirectoryExistence = (filePath: string) => {
 }
 
 export async function processRepository(repositoryName: string) {
-  const fileSrc = 'src/app/api/data'
+  // const fileSrc = 'src/app/api/data'
+  const fileSrc = '/tmp/'
+
   const repositoryPath = path.resolve(
     `${fileSrc}/clonedRepositories/${repositoryName}/`,
   )

@@ -4,7 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import { processRepository } from './processRepository'
 
-const filePath = path.resolve('src/app/api/data')
+// const filePath = path.resolve('src/app/api/data')
+const filePath = path.resolve('/tmp/')
 const git = simpleGit()
 
 export async function POST(req: NextRequest) {

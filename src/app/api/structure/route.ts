@@ -13,8 +13,11 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       )
     }
+    // const filePath = path.resolve(
+    //   `src/app/api/data/processedRepositories/${repoName}/structure.json`,
+    // )
     const filePath = path.resolve(
-      `src/app/api/data/processedRepositories/${repoName}/structure.json`,
+      `/tmp/processedRepositories/${repoName}/structure.json`,
     )
     const data = fs.readFileSync(filePath, 'utf8')
     return NextResponse.json(JSON.parse(data))

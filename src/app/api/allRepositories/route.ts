@@ -9,10 +9,11 @@ import axios from 'axios'
 import extract from 'extract-zip'
 
 // const folderPath = 'src/app/api/data/'
-// const filePath = path.resolve(`${folderPath}repositories.json`)
+const folderPath = '/tmp/'
 
-const folderPath = '/tmp/' // Utiliza la carpeta /tmp
-const filePath = path.resolve('src/app/api/data/repositories.json')
+// const filePath = path.resolve(`${folderPath}repositories.json`)
+// const filePath = path.resolve('src/app/api/data/repositories.json')
+const filePath = path.resolve('/tmp/repositories.json')
 
 const saveRepos = (repos: Repository[]) => {
   fs.writeFileSync(filePath, JSON.stringify(repos, null, 2), 'utf8')
