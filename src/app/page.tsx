@@ -101,6 +101,11 @@ export default function Home() {
           {errorRepoUrl !== '' && (
             <p className="text-red-500 absolute mt-11">{errorRepoUrl}</p>
           )}
+          {loading && (
+            <p className="text-[#5cc8f7] absolute mt-11">
+              Cloning repository and analyzing it...
+            </p>
+          )}
         </div>
         <button
           type="submit"

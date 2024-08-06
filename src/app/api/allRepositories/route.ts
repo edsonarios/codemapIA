@@ -37,11 +37,11 @@ export async function POST(req: NextRequest) {
       if (!fs.existsSync(cloneDir)) {
         console.log('Cloning repository:', url)
         await git.clone(url, cloneDir)
-        // fs.rmdirSync(cloneDir, { recursive: true })
       } else {
         console.log('Repository already cloned:', cloneDir)
       }
       await processRepository(repoName)
+      // fs.rmdirSync(cloneDir, { recursive: true })
 
       const newRepo: Repository = {
         name: url.split('/').pop() as string,
