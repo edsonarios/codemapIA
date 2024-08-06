@@ -143,7 +143,12 @@ export default function Home() {
         </div>
       </div>
       <footer className="absolute text-white text-center w-full bottom-0 p-6">
-        <p className="text-center text-sm text-gray-100">
+        <p className="text-center text-sm text-gray-600">
+          <strong>Note:</strong> Scanned repositories are only saved temporarily
+          while the Vercel lambda function is active. Upon restart, saved
+          repositories are lost.
+        </p>
+        <p className="text-center text-sm text-gray-100 mt-4">
           &copy; 2024 CodeMap IA - Edson Añawaya Rios.
         </p>
       </footer>

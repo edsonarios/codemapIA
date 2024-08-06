@@ -293,7 +293,9 @@ export default function GraphPage() {
           className="w-full flex justify-center flex-col items-center"
         >
           <h2 className="text-2xl mt-4 text-center mb-2">
-            Code Map, Graph {index + 1}
+            {index === graphs.length - 1
+              ? 'Single files'
+              : `Code Map, Graph ${index + 1}`}
           </h2>
 
           <svg

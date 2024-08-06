@@ -5,7 +5,7 @@ const isVercelEnvironment = !!process.env.VERCEL
 export const routePath = isVercelEnvironment
   ? '/tmp/'
   : path.resolve('src/app/api/data/')
-console.log(routePath)
+// console.log(routePath)
 
 export function formatRepositoryName(repoName: string) {
   // Separar por guiones
