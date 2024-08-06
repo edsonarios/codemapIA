@@ -21,6 +21,24 @@ export default function GraphPage() {
   const [graphs, setGraphs] = useState<Record<string, string[]>[]>([])
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
+  const [apiKeyValue, setApiKeyValue] = useState('')
+  const [apiKey, setApiKey] = useState('')
+  const [error, setError] = useState('')
+
+  const handleApiKeySubmit = (event: any) => {
+    event.preventDefault()
+    if (apiKeyValue === '') {
+      setError('API Key is required')
+      return
+    }
+    if (apiKeyValue.length > 200) {
+      setError('API Key is too long')
+      return
+    }
+    localStorage.setItem('OPENAI_API_KEY', apiKeyValue)
+    setApiKey(apiKeyValue)
+  }
+
   const svgRefs = useRef<(SVGSVGElement | null)[]>([])
   const innerRefs = useRef<(SVGGElement | null)[]>([])
 
@@ -175,6 +193,11 @@ export default function GraphPage() {
       }
     }
     fetchStructure()
+    const storedApiKey = localStorage.getItem('OPENAI_API_KEY')
+    console.log('storedApiKey', storedApiKey)
+    if (storedApiKey) {
+      setApiKey(storedApiKey)
+    }
   }, [])
 
   useEffect(() => {
@@ -195,13 +218,65 @@ export default function GraphPage() {
       <PanelInformation
         keyInfoPanel={panelInfo}
         setKeyInfoPanel={setPanelInfo}
+        apiKey={apiKey}
       />
+      {/* Home Page Button */}
       <a
         className=" absolute top-6 left-24 text-xl text-[#5cc8f7]  p-2 border-b-2 border-[#5cc8f7] rounded-md hover:bg-zinc-700"
         href="/"
+        title="Go to Home Page"
       >
         Home Page
       </a>
+
+      {/* Api Key */}
+      {panelInfo === null && apiKey === '' ? (
+        <form
+          onSubmit={handleApiKeySubmit}
+          className="absolute top-0 right-0 flex flex-col items-center mt-8 mr-2"
+        >
+          <label htmlFor="api-key" className="text-sm mb-2 text-yellow-500">
+            OpenAI API Key not found. Please enter your API Key
+          </label>
+          <div className="flex flex-row justify-center items-center">
+            <div className="flex flex-col relative">
+              <input
+                type="password"
+                id="api-key"
+                value={apiKeyValue}
+                onChange={(e) => {
+                  setError('')
+                  setApiKeyValue(e.target.value)
+                }}
+                className="p-1 border rounded text-black"
+              />
+              {error && (
+                <p className="absolute text-red-500 text-sm mt-10">{error}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-400 text-white p-2 ml-2 rounded text-sm"
+              title="Save API Key"
+            >
+              Save
+            </button>
+          </div>
+        </form>
+      ) : panelInfo === null ? (
+        <div className="absolute top-0 right-0 mt-12 mr-8">
+          <button
+            className="bg-yellow-500 hover:bg-yellow-400 text-white p-2 ml-2 rounded text-sm"
+            onClick={() => {
+              localStorage.removeItem('OPENAI_API_KEY')
+              setApiKeyValue('')
+              setApiKey('')
+            }}
+          >
+            Remove API Key
+          </button>
+        </div>
+      ) : null}
 
       <h1 className="text-4xl mt-4">CodeMap AI</h1>
       <h2 className="text-center text-xl mt-2 text-balance text-[#5cc8f7]">

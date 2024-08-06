@@ -10,9 +10,11 @@ import { paramViewPageName } from '@/components/utils/constants'
 export function PanelInformation({
   keyInfoPanel,
   setKeyInfoPanel,
+  apiKey,
 }: {
   keyInfoPanel: string | null
   setKeyInfoPanel: (key: string | null) => void
+  apiKey: string
 }) {
   const {
     contentFiles,
@@ -68,6 +70,7 @@ export function PanelInformation({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          apiKey,
           messages: [
             {
               role: 'user',
@@ -114,6 +117,13 @@ Este es un ejemplo de output que quiero,
           ],
         }),
       })
+
+      if (!response.ok) {
+        const data = await response.json()
+        setLoading(false)
+        setDetailByIA(`<p style=color:red;>${data.error}</p>`)
+        return
+      }
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
       let detailsResponse = ''
