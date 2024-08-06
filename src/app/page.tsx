@@ -12,9 +12,7 @@ export interface Repository {
 
 export default function Home() {
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
-  const [repoUrl, setRepoUrl] = useState(
-    'https://github.com/midudev/hackaton-vercel-2024',
-  )
+  const [repoUrl, setRepoUrl] = useState('')
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -84,6 +82,9 @@ export default function Home() {
           Paste your GitHub repository URL to analyze its code structure. If the
           repository has been previously analyzed, you can view the results
           instantly.
+        </h3>
+        <h3 className="mt-4 text-xl text-gray-500">
+          Example: https://github.com/midudev/hackaton-vercel-2024
         </h3>
       </div>
       <form
