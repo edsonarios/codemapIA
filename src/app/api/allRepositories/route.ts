@@ -56,12 +56,13 @@ export async function POST(req: NextRequest) {
     if (existingRepo) {
       return NextResponse.json({ url: repoName })
     } else {
-      fs.mkdirSync(path.join(cloneDir), {
-        recursive: true,
-      })
-      if (!fs.existsSync(path.join(cloneDir))) {
+      // console.log('Creating folder:', !fs.existsSync(path.join(cloneDir)))
+      // fs.mkdirSync(cloneDir, {
+      //   recursive: true,
+      // })
+      if (!fs.existsSync(cloneDir)) {
         console.log('Creating folder:', repoName)
-        fs.mkdirSync(path.join(cloneDir), {
+        fs.mkdirSync(cloneDir, {
           recursive: true,
         })
       }
