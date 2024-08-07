@@ -20,4 +20,5 @@ https://codemap-ia.vercel.app/
 If you want a detailed explanation by AI, you can set your ApiKey via the web (not mandatory), you can even analyze your entire repository to get a graphical visualization.
 
 ## Know Issues
-* Not support imports alias (Fix coming)
+* Not support imports alias - (Fixed) ✅
+* Just supports projects js, ts, tsx
