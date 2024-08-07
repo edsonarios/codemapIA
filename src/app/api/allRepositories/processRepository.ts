@@ -1,9 +1,11 @@
 import fs from 'fs'
 import path from 'path'
-import * as babelParser from '@babel/parser'
-import traverse from '@babel/traverse'
 import { routePath } from '../utils'
-import { getAliasesFromTsConfig } from './utils'
+import {
+  ensureDirectoryExistence,
+  extractImports,
+  getAliasesFromTsConfig,
+} from './utils'
 
 const ignoreFolders = [
   'node_modules',
@@ -41,36 +43,27 @@ const ignorePatterns = [
   /\.otf/,
 ]
 
+function cleanImportsFromOutput(outputContent: { [key: string]: string[] }) {
+  const keys = Object.keys(outputContent)
+  keys.forEach((key) => {
+    const imports = outputContent[key]
+    const cleanedImports = imports
+      .map((importPath) => {
+        importPath = importPath.replace(/(\.\.\/|\.\.\\|\.\/|\.\\)/g, '')
+        const foundKey = keys.find((key) => key.includes(importPath))
+        return foundKey
+      })
+      .filter((importPath) => importPath !== undefined) // Filter out undefined values
+    outputContent[key] = cleanedImports
+  })
+  return outputContent
+}
+
 function shouldIgnoreFile(fileName: string): boolean {
   return (
     ignoreFiles.includes(fileName) ||
     ignorePatterns.some((pattern) => pattern.test(fileName))
   )
-}
-
-function isRelativeImport(importPath: string): boolean {
-  return importPath.startsWith('./') || importPath.startsWith('../')
-}
-
-function extractImports(fileContent: string): string[] {
-  const imports: string[] = []
-  try {
-    const ast = babelParser.parse(fileContent, {
-      sourceType: 'module',
-      plugins: ['typescript', 'jsx'],
-    })
-
-    traverse(ast, {
-      ImportDeclaration({ node }) {
-        if (isRelativeImport(node.source.value)) {
-          imports.push(node.source.value)
-        }
-      },
-    })
-  } catch (error) {
-    // console.error(`Error parsing file content: ${error.message}`)
-  }
-  return imports
 }
 
 function processDirectory(
@@ -95,7 +88,7 @@ function processDirectory(
       if (!shouldIgnoreFile(file)) {
         const relativePath = path.relative(baseDir, fullPath)
         const fileContent = fs.readFileSync(fullPath, 'utf8')
-        const imports = extractImports(fileContent)
+        const imports = extractImports(fileContent, aliases)
         const pathFile = relativePath.replace(/\\/g, '/')
         outputContent[pathFile] = imports
       }
@@ -134,31 +127,6 @@ function getContentFiles(
   return outputContentFile
 }
 
-function cleanImportsFromOutput(outputContent: { [key: string]: string[] }) {
-  const keys = Object.keys(outputContent)
-  keys.forEach((key) => {
-    const imports = outputContent[key]
-    const cleanedImports = imports
-      .map((importPath) => {
-        importPath = importPath.replace(/(\.\.\/|\.\.\\|\.\/|\.\\)/g, '')
-        const foundKey = keys.find((key) => key.includes(importPath))
-        return foundKey
-      })
-      .filter((importPath) => importPath !== undefined) // Filter out undefined values
-    outputContent[key] = cleanedImports
-  })
-  return outputContent
-}
-
-const ensureDirectoryExistence = (filePath: string) => {
-  const dirname = path.dirname(filePath)
-  if (fs.existsSync(dirname)) {
-    return true
-  }
-  ensureDirectoryExistence(dirname)
-  fs.mkdirSync(dirname)
-}
-
 export async function processRepository(repositoryName: string) {
   const fileSrc = `${routePath}`
   const repositoryNameCleaned = repositoryName.replace('-main', '')
@@ -178,6 +146,7 @@ export async function processRepository(repositoryName: string) {
 
   const tsConfigPath = path.join(repositoryPath, 'tsconfig.json')
   const aliases = getAliasesFromTsConfig(tsConfigPath)
+  // console.log('aliases', aliases)
 
   let outputContent = processDirectory(
     repositoryPath,

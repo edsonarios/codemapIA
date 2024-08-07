@@ -14,15 +14,10 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       )
     }
-    // const filePath = path.resolve(
-    //   `src/app/api/data/processedRepositories/${repoName}/contentFiles.json`,
-    // )
+
     const filePath = path.resolve(
       `${routePath}/processedRepositories/${repoName}/contentFiles.json`,
     )
-    // const filePath = path.resolve(
-    //   `/tmp/processedRepositories/${repoName}/contentFiles.json`,
-    // )
     const data = fs.readFileSync(filePath, 'utf8')
     return NextResponse.json(JSON.parse(data))
   } catch (error) {

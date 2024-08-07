@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 import { Repository } from '@/app/page'
-import { processRepository } from '../processRepository/processRepository'
+import { processRepository } from './processRepository'
 import axios from 'axios'
 import extract from 'extract-zip'
 import { formatRepositoryName, routePath } from '../utils'
+import { ensureFileExists } from './utils'
 
 const folderPath = routePath
 
@@ -13,12 +14,6 @@ const filePath = `${routePath}/repositories.json`
 
 const saveRepos = (repos: Repository[]) => {
   fs.writeFileSync(filePath, JSON.stringify(repos, null, 2), 'utf8')
-}
-
-const ensureFileExists = (filePath: string) => {
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify([]), 'utf8')
-  }
 }
 
 export async function GET() {
@@ -49,7 +44,6 @@ export async function POST(req: NextRequest) {
         fs.mkdirSync(cloneDir, { recursive: true })
       }
     } catch (error: any) {
-      console.log('Error creating directory:', error)
       return NextResponse.json(
         {
           error: 'Error creating directory',
@@ -66,15 +60,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: repoName })
     } else {
       if (fs.existsSync(cloneDir)) {
-        console.log('zipPath:', zipPath)
-        console.log('cloneDir:', cloneDir)
-
         const downloadUrl = `https://github.com/${repoName}/archive/refs/heads/main.zip`
-        console.log('downloadUrl:', downloadUrl)
         const response = await axios.get(downloadUrl, {
           responseType: 'arraybuffer',
         })
-        console.log('response:', response)
         fs.writeFileSync(zipPath, response.data)
 
         await extract(zipPath, { dir: cloneDir })

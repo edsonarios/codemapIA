@@ -1,7 +1,17 @@
 import fs from 'fs'
+import path from 'path'
 import { parse } from 'jsonc-parser'
 import * as babelParser from '@babel/parser'
 import traverse from '@babel/traverse'
+
+export const ensureDirectoryExistence = (filePath: string) => {
+  const dirname = path.dirname(filePath)
+  if (fs.existsSync(dirname)) {
+    return true
+  }
+  ensureDirectoryExistence(dirname)
+  fs.mkdirSync(dirname)
+}
 
 export function getAliasesFromTsConfig(tsConfigPath: string) {
   const tsConfig = fs.readFileSync(tsConfigPath, 'utf8')
@@ -15,39 +25,21 @@ export function getAliasesFromTsConfig(tsConfigPath: string) {
     const cleanedAlias = alias.replace('/*', '')
     aliases[cleanedAlias] = actualPath
   })
-  // console.log('aliases', aliases)
   return aliases
 }
-
-// function isRelativeImport(
-//   importPath: string,
-//   aliases: { [key: string]: string },
-// ): boolean {
-//   return (
-//     importPath.startsWith('./') ||
-//     importPath.startsWith('../') ||
-//     Object.keys(aliases).some((alias) => importPath.startsWith(alias))
-//   )
-// }
 
 function resolveImportPath(
   importPath: string,
   aliases: { [key: string]: string },
-  baseDir: string,
 ): string | undefined {
-  // console.log(green('-----------------'))
   if (importPath.startsWith('./') || importPath.startsWith('../')) {
-    // console.log('importPath', cyan(importPath))
     return importPath
   }
-  // console.log('importPath', importPath)
   const alias = Object.keys(aliases).find((alias) =>
     importPath.startsWith(alias),
   )
-  // console.log('alias', alias)
   if (alias) {
     const relativePath = importPath.replace(alias, aliases[alias])
-    // console.log('relativePath', relativePath)
     return relativePath
   }
 
@@ -57,7 +49,6 @@ function resolveImportPath(
 export function extractImports(
   fileContent: string,
   aliases: { [key: string]: string },
-  baseDir: string,
 ): string[] {
   const imports: string[] = []
   try {
@@ -68,11 +59,7 @@ export function extractImports(
 
     traverse(ast, {
       ImportDeclaration({ node }) {
-        const resolvedPath = resolveImportPath(
-          node.source.value,
-          aliases,
-          baseDir,
-        )
+        const resolvedPath = resolveImportPath(node.source.value, aliases)
         if (resolvedPath) {
           imports.push(resolvedPath)
         }

@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": "Play Factory Dev",
+    "url": "https://github.com/edsonarios/play-factory-dev",
+    "description": ""
+  },
+  {
+    "name": "Play Factory Web",
+    "url": "https://github.com/edsonarios/play-factory-web",
+    "description": ""
+  }
+]
