@@ -10,7 +10,7 @@ import { ensureFileExists } from './utils'
 
 const folderPath = routePath
 
-const filePath = `${routePath}/repositories.json`
+const filePath = path.join(routePath, 'repositories.json')
 
 const saveRepos = (repos: Repository[]) => {
   fs.writeFileSync(filePath, JSON.stringify(repos, null, 2), 'utf8')

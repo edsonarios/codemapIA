@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
         { status: 400 },
       )
     }
-
     const filePath = path.resolve(
       `${routePath}/processedRepositories/${repoName}/contentFiles.json`,
     )

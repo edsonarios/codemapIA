@@ -85,7 +85,7 @@ export default function Home() {
           instantly.
         </h3>
         <h3 className="mt-4 text-xl text-gray-500">
-          Example: https://github.com/midudev/hackaton-vercel-2024
+          Example: https://github.com/edsonarios/play-factory-dev
         </h3>
       </div>
       <form

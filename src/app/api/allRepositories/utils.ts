@@ -13,19 +13,30 @@ export const ensureDirectoryExistence = (filePath: string) => {
   fs.mkdirSync(dirname)
 }
 
+export const ensureFileExists = (filePath: string) => {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify([]), 'utf8')
+  }
+}
+
 export function getAliasesFromTsConfig(tsConfigPath: string) {
-  const tsConfig = fs.readFileSync(tsConfigPath, 'utf8')
-  const parsedConfig = parse(tsConfig)
+  try {
+    const tsConfig = fs.readFileSync(tsConfigPath, 'utf8')
+    const parsedConfig = parse(tsConfig)
 
-  const paths = parsedConfig.compilerOptions.paths || {}
-  const aliases: { [key: string]: string } = {}
+    const paths = parsedConfig.compilerOptions.paths || {}
+    const aliases: { [key: string]: string } = {}
 
-  Object.keys(paths).forEach((alias) => {
-    const actualPath = paths[alias][0].replace('/*', '')
-    const cleanedAlias = alias.replace('/*', '')
-    aliases[cleanedAlias] = actualPath
-  })
-  return aliases
+    Object.keys(paths).forEach((alias) => {
+      const actualPath = paths[alias][0].replace('/*', '')
+      const cleanedAlias = alias.replace('/*', '')
+      aliases[cleanedAlias] = actualPath
+    })
+    return aliases
+  } catch (error) {
+    // console.log(error)
+    return {}
+  }
 }
 
 function resolveImportPath(
