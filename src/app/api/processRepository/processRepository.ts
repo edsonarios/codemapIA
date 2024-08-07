@@ -3,6 +3,7 @@ import path from 'path'
 import * as babelParser from '@babel/parser'
 import traverse from '@babel/traverse'
 import { routePath } from '../utils'
+import { getAliasesFromTsConfig } from './utils'
 
 const ignoreFolders = [
   'node_modules',
@@ -76,13 +77,19 @@ function processDirectory(
   currentPath: string,
   baseDir: string,
   outputContent: { [key: string]: string[] },
+  aliases: { [key: string]: string },
 ) {
   fs.readdirSync(currentPath).forEach((file) => {
     const fullPath = path.join(currentPath, file)
 
     if (fs.statSync(fullPath).isDirectory()) {
       if (!ignoreFolders.includes(file)) {
-        outputContent = processDirectory(fullPath, baseDir, outputContent)
+        outputContent = processDirectory(
+          fullPath,
+          baseDir,
+          outputContent,
+          aliases,
+        )
       }
     } else {
       if (!shouldIgnoreFile(file)) {
@@ -153,9 +160,8 @@ const ensureDirectoryExistence = (filePath: string) => {
 }
 
 export async function processRepository(repositoryName: string) {
-  // const fileSrc = 'src/app/api/data'
   const fileSrc = `${routePath}`
-
+  const repositoryNameCleaned = repositoryName.replace('-main', '')
   const repositoryPath = path.resolve(
     `${fileSrc}/clonedRepositories/${repositoryName}/`,
   )
@@ -169,11 +175,16 @@ export async function processRepository(repositoryName: string) {
   let fileDetailsPath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryName}/fileDetails.json`,
   )
-  // console.log(`Processing repository: ${repositoryPath}`)
-  // console.log(`Structure path: ${structurePath}`)
-  // console.log(`Content files path: ${contentFilesPath}`)
 
-  let outputContent = processDirectory(repositoryPath, repositoryPath, {})
+  const tsConfigPath = path.join(repositoryPath, 'tsconfig.json')
+  const aliases = getAliasesFromTsConfig(tsConfigPath)
+
+  let outputContent = processDirectory(
+    repositoryPath,
+    repositoryPath,
+    {},
+    aliases,
+  )
   outputContent = cleanImportsFromOutput(outputContent)
   // console.log(outputContent)
 
@@ -181,14 +192,14 @@ export async function processRepository(repositoryName: string) {
   // console.log(contentByFile)
 
   structurePath = path.resolve(
-    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/structure.json`,
+    `${fileSrc}/processedRepositories/${repositoryNameCleaned}/structure.json`,
   )
   contentFilesPath = path.resolve(
-    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/contentFiles.json`,
+    `${fileSrc}/processedRepositories/${repositoryNameCleaned}/contentFiles.json`,
   )
 
   fileDetailsPath = path.resolve(
-    `${fileSrc}/processedRepositories/${repositoryName.replace('-main', '')}/fileDetails.json`,
+    `${fileSrc}/processedRepositories/${repositoryNameCleaned}/fileDetails.json`,
   )
 
   ensureDirectoryExistence(structurePath)

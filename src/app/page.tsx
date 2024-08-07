@@ -57,20 +57,16 @@ export default function Home() {
         },
         body: JSON.stringify({ url: repoUrl }),
       })
-      // console.log(res)
       const data = await res.json()
       // console.log(data)
       if (res.status === 200) {
-        // console.log('ok')
         router.push(
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
         )
       } else {
-        console.log(data)
         setErrorRepoUrl(data.error || 'Error')
       }
     } catch (error: any) {
-      console.log(error)
       setErrorRepoUrl(error.error || 'Error')
     }
     setLoading(false)
@@ -126,7 +122,6 @@ export default function Home() {
           ) : (
             'Analyze'
           )}
-          {/* Analyze */}
         </button>
       </form>
 

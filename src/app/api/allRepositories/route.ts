@@ -1,22 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
-import simpleGit from 'simple-git'
 import { Repository } from '@/app/page'
 import { processRepository } from '../processRepository/processRepository'
-import { exec } from 'child_process'
 import axios from 'axios'
 import extract from 'extract-zip'
 import { formatRepositoryName, routePath } from '../utils'
 
-// const folderPath = 'src/app/api/data/'
-// const folderPath = '/tmp/'
 const folderPath = routePath
 
-// const filePath = path.resolve(`${folderPath}repositories.json`)
-// const filePath = path.resolve('src/app/api/data/repositories.json')
-
-// const filePath = path.resolve('/tmp/repositories.json')
 const filePath = `${routePath}/repositories.json`
 
 const saveRepos = (repos: Repository[]) => {
@@ -39,19 +31,6 @@ export async function GET() {
   }
 }
 
-// const runCommand = (command: string) => {
-//   return new Promise((resolve, reject) => {
-//     exec(command, (error, stdout, stderr) => {
-//       if (error) {
-//         reject(error)
-//       } else {
-//         resolve(stdout || stderr)
-//       }
-//     })
-//   })
-// }
-
-// const git = simpleGit()
 export async function POST(req: NextRequest) {
   try {
     const { url } = await req.json()
@@ -64,29 +43,6 @@ export async function POST(req: NextRequest) {
       'clonedRepositories',
       `${repoName}.zip`,
     )
-
-    console.log('cloneDir:', cloneDir)
-    console.log('zipPath:', zipPath)
-
-    // const lsOutput = await runCommand('ls -la /tmp')
-    // console.log('lsOutput:', lsOutput)
-
-    // Intentar crear un directorio de prueba para verificar permisos
-    // const testDir = path.join('/tmp/', 'test-permissions')
-    // try {
-    //   fs.mkdirSync(testDir, { recursive: true })
-    //   fs.rmdirSync(testDir) // Eliminar el directorio de prueba después de la verificación
-    // } catch (error: any) {
-    //   console.log('Error creating test directory:', error)
-    //   return NextResponse.json(
-    //     {
-    //       error: 'Insufficient permissions to create directory',
-    //       message: error.message,
-    //       lsOutput,
-    //     },
-    //     { status: 500 },
-    //   )
-    // }
 
     try {
       if (!fs.existsSync(cloneDir)) {
