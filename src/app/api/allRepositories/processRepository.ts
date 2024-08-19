@@ -6,7 +6,42 @@ import {
   extractImports,
   getAliasesFromTsConfig,
 } from './utils'
-import { ignoreFiles, ignoreFolders, ignorePatterns } from './constants'
+
+const ignoreFolders = [
+  'node_modules',
+  'cdk.out',
+  'dist',
+  'coverage',
+  'test',
+  'tests',
+  'tests-e2e',
+  'tests-unit',
+  'tests-integration',
+  'tests-acceptance',
+  'tests-functional',
+  'tests-regression',
+  'tests-performance',
+  'tests-security',
+  'tes',
+  '.git',
+  'public',
+  'dist-electron',
+  'release',
+  'postgres',
+]
+const ignoreFiles = ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml']
+const ignorePatterns = [
+  /\.env.*/,
+  /\.ico/,
+  /\.png/,
+  /\.webp/,
+  /\.jpg/,
+  /\.jpeg/,
+  /\.svg/,
+  /\.gif/,
+  /\.eot/,
+  /\.otf/,
+]
 
 function cleanImportsFromOutput(outputContent: { [key: string]: string[] }) {
   const keys = Object.keys(outputContent)
@@ -14,30 +49,8 @@ function cleanImportsFromOutput(outputContent: { [key: string]: string[] }) {
     const imports = outputContent[key]
     const cleanedImports = imports
       .map((importPath) => {
-        let toFindImportPath = importPath.replace(
-          /(\.\.\/|\.\.\\|\.\/|\.\\)/g,
-          '',
-        )
-        toFindImportPath = toFindImportPath.startsWith('src/')
-          ? toFindImportPath
-          : `/${toFindImportPath}`
-        let foundKey = keys.find((key) => key.includes(toFindImportPath))
-
-        // Verify if the import path is a folder and if it has an index.ts file
-        if (!toFindImportPath.match(/\.\w+$/) && foundKey) {
-          const basePath = foundKey.substring(
-            0,
-            foundKey.lastIndexOf(toFindImportPath) + toFindImportPath.length,
-          )
-
-          const potentialIndexPath = `${basePath}/index`
-          const resolvedIndexPath = keys.find((key) =>
-            key.includes(potentialIndexPath),
-          )
-          if (resolvedIndexPath) {
-            foundKey = resolvedIndexPath
-          }
-        }
+        importPath = importPath.replace(/(\.\.\/|\.\.\\|\.\/|\.\\)/g, '')
+        const foundKey = keys.find((key) => key.includes(importPath))
         return foundKey
       })
       .filter((importPath) => importPath !== undefined) // Filter out undefined values
@@ -53,20 +66,18 @@ function shouldIgnoreFile(fileName: string): boolean {
   )
 }
 
-async function processDirectory(
+function processDirectory(
   currentPath: string,
   baseDir: string,
   outputContent: { [key: string]: string[] },
   aliases: { [key: string]: string },
 ) {
-  const entries = fs.readdirSync(currentPath)
-  for (const file of entries) {
+  fs.readdirSync(currentPath).forEach((file) => {
     const fullPath = path.join(currentPath, file)
-    const fileType = path.extname(file).slice(1)
 
     if (fs.statSync(fullPath).isDirectory()) {
       if (!ignoreFolders.includes(file)) {
-        outputContent = await processDirectory(
+        outputContent = processDirectory(
           fullPath,
           baseDir,
           outputContent,
@@ -77,12 +88,13 @@ async function processDirectory(
       if (!shouldIgnoreFile(file)) {
         const relativePath = path.relative(baseDir, fullPath)
         const fileContent = fs.readFileSync(fullPath, 'utf8')
-        const imports = await extractImports(fileContent, aliases, fileType)
+        const imports = extractImports(fileContent, aliases)
         const pathFile = relativePath.replace(/\\/g, '/')
         outputContent[pathFile] = imports
       }
     }
-  }
+    // console.log(outputContent)
+  })
   return outputContent
 }
 
@@ -110,6 +122,7 @@ function getContentFiles(
         outputContentFile[pathFile] = `${fileContent}`
       }
     }
+    // console.log(outputContentFile)
   })
   return outputContentFile
 }
@@ -133,16 +146,19 @@ export async function processRepository(repositoryName: string) {
 
   const tsConfigPath = path.join(repositoryPath, 'tsconfig.json')
   const aliases = getAliasesFromTsConfig(tsConfigPath)
+  // console.log('aliases', aliases)
 
-  let outputContent = await processDirectory(
+  let outputContent = processDirectory(
     repositoryPath,
     repositoryPath,
     {},
     aliases,
   )
   outputContent = cleanImportsFromOutput(outputContent)
+  // console.log(outputContent)
 
   const contentByFile = getContentFiles(repositoryPath, repositoryPath, {})
+  // console.log(contentByFile)
 
   structurePath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryNameCleaned}/structure.json`,
@@ -160,4 +176,5 @@ export async function processRepository(repositoryName: string) {
   fs.writeFileSync(structurePath, JSON.stringify(outputContent, null, 2))
   fs.writeFileSync(contentFilesPath, JSON.stringify(contentByFile, null, 2))
   fs.writeFileSync(fileDetailsPath, JSON.stringify({}))
+  // console.log(`Files are consolidated in: ${structurePath}`)
 }
