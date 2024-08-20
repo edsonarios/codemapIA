@@ -172,7 +172,7 @@ Este es un ejemplo de output que quiero,
   return (
     <div
       id="info-panel"
-      className="absolute right-0 top-0 h-full w-1/3 bg-[#353847] p-4 border-l-2"
+      className="absolute right-0 top-0 h-full w-1/3 bg-[#353847] p-4 border-l-2 z-10"
     >
       <div className="relative w-full h-full">
         <div className="sticky right-0 top-0">
