@@ -1,3 +1,4 @@
+import { NodesAndEdges } from '@/app/view/interface/nodesAndEdges.interface'
 import { type StateCreator, create } from 'zustand'
 
 export interface IRepositoryStore {
@@ -12,6 +13,12 @@ export interface IRepositoryStore {
 
   paramRepoName: string
   setParamRepoName: (paramRepoName: string) => void
+
+  storeNodesAndEdges: NodesAndEdges[]
+  setStoreNodesAndEdges: (nodesAndEdges: NodesAndEdges[]) => void
+
+  isDisableButton: boolean
+  setIsDisableButton: (isDisableButton: boolean) => void
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   structure: {},
@@ -25,6 +32,13 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
 
   paramRepoName: '',
   setParamRepoName: (paramRepoName) => set({ paramRepoName }),
+
+  storeNodesAndEdges: [],
+  setStoreNodesAndEdges: (nodesAndEdges) =>
+    set({ storeNodesAndEdges: nodesAndEdges }),
+
+  isDisableButton: true,
+  setIsDisableButton: (isDisableButton) => set({ isDisableButton }),
 })
 
 export const useRepositoryStore = create<IRepositoryStore>()(repositoryStore)

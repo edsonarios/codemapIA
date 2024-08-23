@@ -2,8 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from 'jsonc-parser'
 import * as babelParser from '@babel/parser'
-import traverse from '@babel/traverse'
-import { MarkerType } from '@xyflow/react'
+import traverse, { Node } from '@babel/traverse'
+import { Edge, MarkerType } from '@xyflow/react'
 import dagre from 'dagre'
 
 export const ensureDirectoryExistence = (filePath: string) => {
@@ -203,21 +203,23 @@ export function createNodesAndEdges(graphs: Record<string, string[]>) {
       id: key,
       data: { label: nameFile },
       position: { x: 0, y: 0 }, // The positions will be calculated later
-      width: nameFile.length * 8,
+      width: nameFile.length * 9,
     })
 
     graphs[key].forEach((dependency) => {
-      edges.push({
+      const newEdge: Edge = {
         id: `${key}-${dependency}`,
         source: key,
         target: dependency,
         animated: false,
+        type: 'bezier', // 'straight', 'step', 'smoothstep', 'bezier'
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 30,
           height: 30,
         },
-      })
+      }
+      edges.push(newEdge)
     })
   })
 

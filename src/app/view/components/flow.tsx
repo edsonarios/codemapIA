@@ -11,6 +11,12 @@ import {
   SelectionMode,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import { NodesAndEdges } from '../interface/nodesAndEdges.interface'
+import { debounce } from 'lodash'
+import {
+  IRepositoryStore,
+  useRepositoryStore,
+} from '@/components/store/repositoryStore'
 
 const initialNodes = [
   { id: '1', data: { label: 'Node 1' }, position: { x: 0, y: 0 }, style: {} },
@@ -19,20 +25,20 @@ const initialNodes = [
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2', animated: false }]
 
-interface NodesAndEdges {
-  nodes: any[]
-  edges: any[]
-}
-
 export function Flow({
   NodesAndEdges,
   panelInfo,
   setPanelInfo,
+  index,
 }: {
   NodesAndEdges: NodesAndEdges
   panelInfo: string | null
   setPanelInfo: (key: string | null) => void
+  index: number
 }) {
+  const { storeNodesAndEdges, setStoreNodesAndEdges, setIsDisableButton } =
+    useRepositoryStore<IRepositoryStore>((state) => state)
+
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
   const onConnect = useCallback(
@@ -41,8 +47,6 @@ export function Flow({
   )
 
   const handleNodeClick = (event: any, node: any) => {
-    // 20 220 112
-    // console.log('Node:', nodes)
     if (panelInfo === node.id) {
       setPanelInfo(null)
     } else {
@@ -98,6 +102,24 @@ export function Flow({
     setNodes(NodesAndEdges.nodes)
     setEdges(NodesAndEdges.edges)
   }, [])
+
+  const debouncedUpdate = useCallback(
+    debounce((nodes, edges) => {
+      const updatedState = { nodes, edges }
+      const newStoreNodesAndEdges = storeNodesAndEdges.map((item, i) =>
+        i === index ? updatedState : item,
+      )
+      setStoreNodesAndEdges(newStoreNodesAndEdges)
+      setIsDisableButton(false)
+      // console.log('updatedState')
+    }, 500),
+    [],
+  )
+
+  useEffect(() => {
+    // console.log('change nodes or edges')
+    debouncedUpdate(nodes, edges)
+  }, [nodes, edges])
 
   return (
     <div className="text-black w-[90%] h-[800px] flex justify-center flex-col items-center border-2 rounded-md">

@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-
 import { PanelInformation } from './panelInformation'
 import {
   IRepositoryStore,
@@ -9,16 +8,18 @@ import {
 } from '@/components/store/repositoryStore'
 import { paramViewPageName } from '@/components/utils/constants'
 import { Flow } from './flow'
-import { NodesAndEdges } from '../interface/nodesAndEdges.interface'
+import { Toaster, toast } from 'sonner'
 
 export default function GraphPage() {
-  // let processDirectory = false
   const searchParams = useSearchParams()
   const paramRepository = searchParams.get(paramViewPageName) as string
-  const { setParamRepoName } = useRepositoryStore<IRepositoryStore>(
-    (state) => state,
-  )
-  const [nodesAndEdges, setNodesAndEdges] = useState<NodesAndEdges[]>([])
+  const {
+    setParamRepoName,
+    storeNodesAndEdges,
+    setStoreNodesAndEdges,
+    isDisableButton,
+    setIsDisableButton,
+  } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
   const [apiKeyValue, setApiKeyValue] = useState('')
@@ -52,9 +53,9 @@ export default function GraphPage() {
           return
         }
         const nodesAndEdgesResponse = await res.json()
-        console.log(nodesAndEdgesResponse)
+        // console.log(nodesAndEdgesResponse)
         setParamRepoName(paramRepository)
-        setNodesAndEdges(nodesAndEdgesResponse)
+        setStoreNodesAndEdges(nodesAndEdgesResponse)
       } catch (error) {
         console.error('Error fetching structure:', error)
       }
@@ -66,6 +67,27 @@ export default function GraphPage() {
       setApiKey(storedApiKey)
     }
   }, [])
+
+  const saveNodesAndEdges = async () => {
+    setIsDisableButton(true)
+    const res = await fetch(
+      `/api/nodesAndEdges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ body: storeNodesAndEdges }),
+      },
+    )
+    if (!res.ok) {
+      toast.error('Error to save data')
+      return
+    }
+    const data = await res.json()
+    // console.log(data)
+    toast.success(data.response)
+  }
 
   useEffect(() => {
     const handleMouseDown = (event: MouseEvent) => {
@@ -93,13 +115,19 @@ export default function GraphPage() {
         className=" absolute top-6 left-24 text-xs text-[#5cc8f7]  p-2 border-b-2 border-[#5cc8f7] rounded-md hover:bg-zinc-700"
         href="/"
         title="Go to Home Page"
-        onClick={() => {
-          console.log('Home Page')
-          console.log(nodesAndEdges)
-        }}
       >
         ← back to Home Page
       </a>
+
+      <button
+        type="submit"
+        className={`fixed right-4 bottom-4 ${isDisableButton ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-400'} text-white p-2 rounded text-sm shadow-lg`}
+        title="Save Status"
+        onClick={saveNodesAndEdges}
+        disabled={isDisableButton}
+      >
+        Save Status
+      </button>
 
       {/* Api Key */}
       {panelInfo === null && apiKey === '' ? (
@@ -157,24 +185,25 @@ export default function GraphPage() {
       <h3 className="text-gray-400 text-sm text-balance">
         Click on a node to see more information
       </h3>
-      {nodesAndEdges.map((nodeAndEdge, index) => (
+      {storeNodesAndEdges.map((nodeAndEdge, index) => (
         <div
           key={index}
           className="w-full flex justify-center flex-col items-center"
         >
           <h2 className="text-2xl mt-4 text-center mb-2">
-            {index === nodesAndEdges.length - 1
+            {index === storeNodesAndEdges.length - 1
               ? 'Single files'
               : `Code Map, Graph ${index + 1}`}
           </h2>
-          <p>graph</p>
           <Flow
             NodesAndEdges={nodeAndEdge}
             panelInfo={panelInfo}
             setPanelInfo={setPanelInfo}
+            index={index}
           />
         </div>
       ))}
+      <Toaster position="bottom-center" richColors closeButton />
     </section>
   )
 }

@@ -31,10 +31,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { body } = await req.json()
-    console.log('body', body)
     const { searchParams } = new URL(req.url)
     const repoName = searchParams.get(paramViewPageName)
-    console.log('repoName', repoName)
     if (!repoName) {
       return NextResponse.json(
         { error: 'Repository name not found' },
@@ -43,7 +41,7 @@ export async function POST(req: NextRequest) {
     }
 
     fs.writeFileSync(madePath(repoName), JSON.stringify(body, null, 2))
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ response: 'Saved successfully' })
   } catch (error) {
     return NextResponse.json({ error: 'Error writing file' }, { status: 500 })
   }
