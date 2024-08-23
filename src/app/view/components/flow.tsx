@@ -130,9 +130,10 @@ export function Flow({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         // panOnScroll // Disable zoom by scroll
-        selectionOnDrag
-        panOnDrag={[1, 2]}
-        selectionMode={SelectionMode.Partial}
+        // ? selection Mode
+        // selectionOnDrag
+        // panOnDrag={[1, 2]}
+        // selectionMode={SelectionMode.Partial}
         onNodeClick={handleNodeClick}
         onNodeMouseEnter={handleNodeMouseEnter}
         onNodeMouseLeave={handleNodeMouseLeave}

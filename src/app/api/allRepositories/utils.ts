@@ -193,17 +193,21 @@ export const separateGraphs = (
   return mergedGraphs
 }
 
+function calculateNodeWidth(text: string, charWidth = 9, padding = 20) {
+  return text.length * charWidth + padding
+}
+
 export function createNodesAndEdges(graphs: Record<string, string[]>) {
   const nodes: object[] = []
   const edges: object[] = []
-
   Object.keys(graphs).forEach((key) => {
     const nameFile = key.split('/').pop() || ''
+    const nodeWidth = calculateNodeWidth(nameFile)
     nodes.push({
       id: key,
       data: { label: nameFile },
       position: { x: 0, y: 0 }, // The positions will be calculated later
-      width: nameFile.length * 9,
+      width: nodeWidth,
     })
 
     graphs[key].forEach((dependency) => {
@@ -226,27 +230,60 @@ export function createNodesAndEdges(graphs: Record<string, string[]>) {
   return { nodes, edges }
 }
 
-export function layoutNodes(nodes: any[], edges: any[]) {
+export function layoutNodes(
+  nodes: any[],
+  edges: any[],
+  columns = 5,
+  verticalGap = 100,
+  horizontalGap = 250,
+) {
   const g = new dagre.graphlib.Graph()
   g.setGraph({})
   g.setDefaultEdgeLabel(() => ({}))
 
-  nodes.forEach((node: any) => g.setNode(node.id, {}))
+  nodes.forEach((node: any) =>
+    g.setNode(node.id, { width: node.width || 100, height: 50 }),
+  )
   edges.forEach((edge: any) => g.setEdge(edge.source, edge.target))
 
   g.graph().ranksep = 100 // Vertical space
-  g.graph().nodesep = 300 // Horizontal space
-  g.graph().marginx = 20 // Margin horizontal around the graph
-  g.graph().marginy = 20 // Margin vertical around the graph
+  g.graph().nodesep = 50 // Horizontal space
+  // g.graph().marginx = 20 // Margin horizontal around the graph
+  // g.graph().marginy = 20 // Margin vertical around the graph
 
   dagre.layout(g)
 
   const positionedNodes = nodes.map((node: any) => ({
     ...node,
     position: {
-      x: g.node(node.id).x,
-      y: g.node(node.id).y,
+      x: g.node(node.id)?.x || node.position.x,
+      y: g.node(node.id)?.y || node.position.y,
     },
   }))
+
+  // Sort singles files
+  let lastIndex = positionedNodes.length - 1
+  const xPos = 0
+  const yPos =
+    Math.max(...positionedNodes.map((node) => node.position.y)) + verticalGap
+
+  while (
+    lastIndex >= 0 &&
+    !edges.some(
+      (edge) =>
+        edge.source === positionedNodes[lastIndex].id ||
+        edge.target === positionedNodes[lastIndex].id,
+    )
+  ) {
+    const column = (positionedNodes.length - 1 - lastIndex) % columns
+    const row = Math.floor((positionedNodes.length - 1 - lastIndex) / columns)
+
+    positionedNodes[lastIndex].position = {
+      x: xPos + column * horizontalGap + 50,
+      y: yPos + row * verticalGap,
+    }
+
+    lastIndex--
+  }
   return { nodes: positionedNodes, edges }
 }
