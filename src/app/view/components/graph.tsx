@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-import { separateGraphs } from './utils'
 import { PanelInformation } from './panelInformation'
 import {
   IRepositoryStore,
@@ -10,14 +9,16 @@ import {
 } from '@/components/store/repositoryStore'
 import { paramViewPageName } from '@/components/utils/constants'
 import { Flow } from './flow'
+import { NodesAndEdges } from '../interface/nodesAndEdges.interface'
 
 export default function GraphPage() {
   // let processDirectory = false
   const searchParams = useSearchParams()
   const paramRepository = searchParams.get(paramViewPageName) as string
-  const { structure, setStructure, setParamRepoName } =
-    useRepositoryStore<IRepositoryStore>((state) => state)
-  const [graphs, setGraphs] = useState<Record<string, string[]>[]>([])
+  const { setParamRepoName } = useRepositoryStore<IRepositoryStore>(
+    (state) => state,
+  )
+  const [nodesAndEdges, setNodesAndEdges] = useState<NodesAndEdges[]>([])
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
   const [apiKeyValue, setApiKeyValue] = useState('')
@@ -43,18 +44,17 @@ export default function GraphPage() {
       // console.log(paramRepository)
       try {
         const res = await fetch(
-          `/api/structure?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
+          `/api/nodesAndEdges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
         )
         // console.log(res)
         if (!res.ok) {
           console.error('Error fetching structure:', res)
           return
         }
-        const data = await res.json()
+        const nodesAndEdgesResponse = await res.json()
+        console.log(nodesAndEdgesResponse)
         setParamRepoName(paramRepository)
-        setStructure(data)
-        const separatedGraphs = separateGraphs(data)
-        setGraphs(separatedGraphs)
+        setNodesAndEdges(nodesAndEdgesResponse)
       } catch (error) {
         console.error('Error fetching structure:', error)
       }
@@ -93,6 +93,10 @@ export default function GraphPage() {
         className=" absolute top-6 left-24 text-xs text-[#5cc8f7]  p-2 border-b-2 border-[#5cc8f7] rounded-md hover:bg-zinc-700"
         href="/"
         title="Go to Home Page"
+        onClick={() => {
+          console.log('Home Page')
+          console.log(nodesAndEdges)
+        }}
       >
         ← back to Home Page
       </a>
@@ -153,22 +157,21 @@ export default function GraphPage() {
       <h3 className="text-gray-400 text-sm text-balance">
         Click on a node to see more information
       </h3>
-      {graphs.map((_, index) => (
+      {nodesAndEdges.map((nodeAndEdge, index) => (
         <div
           key={index}
           className="w-full flex justify-center flex-col items-center"
         >
           <h2 className="text-2xl mt-4 text-center mb-2">
-            {index === graphs.length - 1
+            {index === nodesAndEdges.length - 1
               ? 'Single files'
               : `Code Map, Graph ${index + 1}`}
           </h2>
           <p>graph</p>
           <Flow
-            graph={graphs[index]}
+            NodesAndEdges={nodeAndEdge}
             panelInfo={panelInfo}
             setPanelInfo={setPanelInfo}
-            last={index === graphs.length - 1}
           />
         </div>
       ))}

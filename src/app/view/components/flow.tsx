@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react'
-import dagre from 'dagre'
 import {
   ReactFlow,
   MiniMap,
@@ -12,7 +11,6 @@ import {
   SelectionMode,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import { createNodesAndEdges } from './utils'
 
 const initialNodes = [
   { id: '1', data: { label: 'Node 1' }, position: { x: 0, y: 0 }, style: {} },
@@ -21,16 +19,19 @@ const initialNodes = [
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2', animated: false }]
 
+interface NodesAndEdges {
+  nodes: any[]
+  edges: any[]
+}
+
 export function Flow({
-  graph,
+  NodesAndEdges,
   panelInfo,
   setPanelInfo,
-  last,
 }: {
-  graph: Record<string, string[]>
+  NodesAndEdges: NodesAndEdges
   panelInfo: string | null
   setPanelInfo: (key: string | null) => void
-  last: boolean
 }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
@@ -39,36 +40,9 @@ export function Flow({
     [setEdges],
   )
 
-  function layoutNodes(graphs: Record<string, string[]>) {
-    // console.log(graphs)
-    const { nodes, edges } = createNodesAndEdges(graphs)
-    const g = new dagre.graphlib.Graph()
-    g.setGraph({})
-    g.setDefaultEdgeLabel(() => ({}))
-
-    nodes.forEach((node: any) => g.setNode(node.id, {}))
-    edges.forEach((edge: any) => g.setEdge(edge.source, edge.target))
-
-    g.graph().ranksep = last ? 100 : 100 // Vertical space
-    g.graph().nodesep = last ? 200 : 300 // Horizontal space
-    g.graph().marginx = 20 // Margin horizontal around the graph
-    g.graph().marginy = 20 // Margin vertical around the graph
-
-    dagre.layout(g)
-
-    const positionedNodes = nodes.map((node: any) => ({
-      ...node,
-      position: {
-        x: g.node(node.id).x,
-        y: g.node(node.id).y,
-      },
-    }))
-    setNodes(positionedNodes)
-    setEdges(edges as any)
-  }
-
   const handleNodeClick = (event: any, node: any) => {
-    // console.log('Node:', node)
+    // 20 220 112
+    // console.log('Node:', nodes)
     if (panelInfo === node.id) {
       setPanelInfo(null)
     } else {
@@ -121,7 +95,8 @@ export function Flow({
   }
 
   useEffect(() => {
-    layoutNodes(graph)
+    setNodes(NodesAndEdges.nodes)
+    setEdges(NodesAndEdges.edges)
   }, [])
 
   return (

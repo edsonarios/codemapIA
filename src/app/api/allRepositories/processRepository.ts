@@ -2,9 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { routePath } from '../utils'
 import {
+  createNodesAndEdges,
   ensureDirectoryExistence,
   extractImports,
   getAliasesFromTsConfig,
+  layoutNodes,
+  separateGraphs,
 } from './utils'
 
 const ignoreFolders = [
@@ -127,6 +130,16 @@ function getContentFiles(
   return outputContentFile
 }
 
+function madeNodesAndEdges(structure: Record<string, string[]>) {
+  const separatedGraphs = separateGraphs(structure)
+  const nodesAndEdges = []
+  for (let index = 0; index < separatedGraphs.length; index++) {
+    const { nodes, edges } = createNodesAndEdges(separatedGraphs[index])
+    nodesAndEdges.push(layoutNodes(nodes, edges))
+  }
+  return nodesAndEdges
+}
+
 export async function processRepository(repositoryName: string) {
   const fileSrc = `${routePath}`
   const repositoryNameCleaned = repositoryName.replace('-main', '')
@@ -160,9 +173,12 @@ export async function processRepository(repositoryName: string) {
   const contentByFile = getContentFiles(repositoryPath, repositoryPath, {})
   // console.log(contentByFile)
 
+  const nodesAndEdges = madeNodesAndEdges(outputContent)
+
   structurePath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryNameCleaned}/structure.json`,
   )
+
   contentFilesPath = path.resolve(
     `${fileSrc}/processedRepositories/${repositoryNameCleaned}/contentFiles.json`,
   )
@@ -171,10 +187,15 @@ export async function processRepository(repositoryName: string) {
     `${fileSrc}/processedRepositories/${repositoryNameCleaned}/fileDetails.json`,
   )
 
+  const nodesAndEdgesPath = path.resolve(
+    `${fileSrc}/processedRepositories/${repositoryNameCleaned}/nodesAndEdges.json`,
+  )
+
   ensureDirectoryExistence(structurePath)
   ensureDirectoryExistence(contentFilesPath)
   fs.writeFileSync(structurePath, JSON.stringify(outputContent, null, 2))
   fs.writeFileSync(contentFilesPath, JSON.stringify(contentByFile, null, 2))
   fs.writeFileSync(fileDetailsPath, JSON.stringify({}))
+  fs.writeFileSync(nodesAndEdgesPath, JSON.stringify(nodesAndEdges, null, 2))
   // console.log(`Files are consolidated in: ${structurePath}`)
 }

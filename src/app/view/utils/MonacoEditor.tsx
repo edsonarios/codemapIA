@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import OneDarkPro from './theme/onedarkpro.json'
+import OneDarkPro from '../theme/onedarkpro.json'
 const Editor = dynamic(() => import('@monaco-editor/react'), {
   ssr: false,
 })

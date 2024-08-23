@@ -22,3 +22,17 @@ If you want a detailed explanation by AI, you can set your ApiKey via the web (n
 ## Know Issues
 * Not support imports alias - (Fixed) ✅
 * Just supports projects js, ts, tsx
+
+## To do
+* Animation panelInformation
+* Save current position from nodes
+* Use DB for datas
+* If User not login, just allow analyze 1 repository
+* Login for users (Github, google) Oauth, unlimited analyze repositories
+* Different colors by folders to nodes
+* Icons by folder
+* Choose complete folder or fileName
+* Home Page, show analyzed repositories as cards
+
+### Optional
+* Logged in users have 20 free requests to the AI

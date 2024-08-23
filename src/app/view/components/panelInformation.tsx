@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { ColapseIcon } from './icons/colapse'
-import { MonacoEditor } from './MonacoEditor'
+import { ColapseIcon } from '../icons/colapse'
+import { MonacoEditor } from '../utils/MonacoEditor'
 import {
   IRepositoryStore,
   useRepositoryStore,

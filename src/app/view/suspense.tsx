@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import GraphPage from './graph'
+import GraphPage from './components/graph'
 
 const ViewPageWrapper = () => {
   return (
