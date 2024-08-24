@@ -17,6 +17,8 @@ import {
   IRepositoryStore,
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
+import customNode from './customNode'
+const nodeTypes = { customNode }
 
 const initialNodes = [
   { id: '1', data: { label: 'Node 1' }, position: { x: 0, y: 0 }, style: {} },
@@ -47,19 +49,17 @@ export function Flow({
   )
 
   const handleNodeClick = (event: any, node: any) => {
-    if (panelInfo === node.id) {
-      setPanelInfo(null)
-    } else {
-      setNodes((nds) =>
-        nds.map((n) =>
-          n.id === node.id
-            ? { ...n, style: { ...n.style, backgroundColor: '#5cc8f7' } }
-            : { ...n, style: {} },
-        ),
-      )
-      setPanelInfo(node.id)
-    }
+    setPanelInfo(node.id === panelInfo ? null : node.id)
   }
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((n) =>
+        n.id === panelInfo
+          ? { ...n, data: { ...n.data, isSelected: true } }
+          : { ...n, data: { ...n.data, isSelected: false } },
+      ),
+    )
+  }, [panelInfo])
 
   const handleNodeMouseEnter = (event: any, node: any) => {
     setEdges((eds) =>
@@ -69,13 +69,6 @@ export function Flow({
         }
         return edge
       }),
-    )
-    setNodes((nds) =>
-      nds.map((n) =>
-        n.id === node.id && panelInfo !== node.id
-          ? { ...n, style: { ...n.style, backgroundColor: '#999' } }
-          : n,
-      ),
     )
   }
 
@@ -90,11 +83,6 @@ export function Flow({
         }
         return edge
       }),
-    )
-    setNodes((nds) =>
-      nds.map((n) =>
-        n.id === node.id && panelInfo !== node.id ? { ...n, style: {} } : n,
-      ),
     )
   }
 
@@ -137,6 +125,7 @@ export function Flow({
         onNodeClick={handleNodeClick}
         onNodeMouseEnter={handleNodeMouseEnter}
         onNodeMouseLeave={handleNodeMouseLeave}
+        nodeTypes={nodeTypes}
       >
         <Controls />
         <MiniMap />

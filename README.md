@@ -24,9 +24,11 @@ If you want a detailed explanation by AI, you can set your ApiKey via the web (n
 * Just supports projects js, ts, tsx
 
 ## To do
-* Animation panelInformation
-* Save current position from nodes
+* Save current position from nodes ✅
+* Improve view graphs ✅
+* Added tooltip complete path ✅
 * Use DB for datas
+* Animation panelInformation
 * If User not login, just allow analyze 1 repository
 * Login for users (Github, google) Oauth, unlimited analyze repositories
 * Different colors by folders to nodes

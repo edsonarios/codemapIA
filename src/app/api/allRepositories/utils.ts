@@ -193,7 +193,7 @@ export const separateGraphs = (
   return mergedGraphs
 }
 
-function calculateNodeWidth(text: string, charWidth = 9, padding = 20) {
+function calculateNodeWidth(text: string, charWidth = 10, padding = 20) {
   return text.length * charWidth + padding
 }
 
@@ -208,6 +208,7 @@ export function createNodesAndEdges(graphs: Record<string, string[]>) {
       data: { label: nameFile },
       position: { x: 0, y: 0 }, // The positions will be calculated later
       width: nodeWidth,
+      type: 'customNode',
     })
 
     graphs[key].forEach((dependency) => {
@@ -216,7 +217,7 @@ export function createNodesAndEdges(graphs: Record<string, string[]>) {
         source: key,
         target: dependency,
         animated: false,
-        type: 'bezier', // 'straight', 'step', 'smoothstep', 'bezier'
+        type: 'default', // 'straight', 'step', 'smoothstep', 'default'
         markerEnd: {
           type: MarkerType.ArrowClosed,
           width: 30,
