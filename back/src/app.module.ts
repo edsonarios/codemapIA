@@ -1,8 +1,9 @@
 import { Logger, Module } from '@nestjs/common'
-import { CodemapModule } from './api/codemap/codemap.module'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { f } from './common/nestConfig/logger'
+import { RepositoriesModule } from './api/repositories/repositories.module'
+import { DbModule } from './api/db/db.module'
 
 const { STAGE } = process.env
 const logger = new Logger('AppModule')
@@ -38,7 +39,8 @@ const logger = new Logger('AppModule')
         }
       },
     }),
-    CodemapModule,
+    RepositoriesModule,
+    DbModule,
   ],
   controllers: [],
   providers: [],

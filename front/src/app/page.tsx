@@ -9,7 +9,6 @@ export interface Repository {
   url: string
   description: string
 }
-
 export default function Home() {
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState('')
@@ -18,9 +17,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL
     const fetchRepos = async () => {
-      const res = await fetch('/api/allRepositories')
+      console.log(API_URL)
+      const res = await fetch(`${API_URL}/repositories`)
       const data: Repository[] = await res.json()
+      console.log(data)
       setAnalyzedRepos(data)
     }
     fetchRepos()
@@ -72,24 +74,8 @@ export default function Home() {
     setLoading(false)
   }
 
-  const handledDB = async () => {
-    try {
-      const res = await fetch('/api/test')
-      const data = await res.json()
-      console.log(data)
-    } catch (error: any) {
-      console.log(error)
-    }
-  }
-
   return (
     <main className="relative flex min-h-screen flex-col items-center p-24 h-full">
-      <button
-        className="bg-blue-500 p-2 rounded-md"
-        onClick={() => handledDB()}
-      >
-        To DB Datas
-      </button>
       <div className="text-center text-balance">
         <h1 className="text-6xl mt-4">CodeMap AI</h1>
         <h2 className="text-2xl mt-4 text-[#5cc8f7]">
