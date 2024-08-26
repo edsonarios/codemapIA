@@ -183,22 +183,22 @@
 // }
 // processRepository('edson/play-factory-web')
 
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-dotenv.config()
-const app = express()
-app.use(express.json())
-app.use(cors())
+// import express from 'express'
+// import cors from 'cors'
+// import dotenv from 'dotenv'
+// dotenv.config()
+// const app = express()
+// app.use(express.json())
+// app.use(cors())
 
-// get users
-app.get('/', async (req, res) => {
-  res.status(200).send({ message: 'Hello World' })
-})
+// // get users
+// app.get('/', async (req, res) => {
+//   res.status(200).send({ message: 'Hello World' })
+// })
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
-  console.log('server listening...')
-})
+// const PORT = process.env.PORT || 5000
+// app.listen(PORT, () => {
+//   console.log('server listening...')
+// })
 
-export default app
+// export default app
