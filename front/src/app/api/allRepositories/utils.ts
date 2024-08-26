@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { parse } from 'jsonc-parser'
 import * as babelParser from '@babel/parser'
-import traverse, { Node } from '@babel/traverse'
+import traverse from '@babel/traverse'
 import { Edge, MarkerType } from '@xyflow/react'
 import dagre from 'dagre'
 
@@ -13,6 +13,7 @@ export const ensureDirectoryExistence = (filePath: string) => {
   }
   ensureDirectoryExistence(dirname)
   fs.mkdirSync(dirname)
+  return false
 }
 
 export const ensureFileExists = (filePath: string) => {
