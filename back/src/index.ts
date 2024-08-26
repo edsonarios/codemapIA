@@ -195,7 +195,7 @@ app.get('/', async (req, res) => {
   res.status(200).send({ message: 'Hello World' })
 })
 
-app.listen(3500, () => {
+app.listen(3000, () => {
   console.log('server listening...')
 })
 
