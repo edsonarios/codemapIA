@@ -28,13 +28,13 @@ If you want a detailed explanation by AI, you can set your ApiKey via the web (n
 * Improve view graphs ✅
 * Added tooltip complete path ✅
 * Use DB for datas
-* Animation panelInformation
 * If User not login, just allow analyze 1 repository
 * Login for users (Github, google) Oauth, unlimited analyze repositories
+* Animation panelInformation
+* Home Page, show analyzed repositories as cards
 * Different colors by folders to nodes
 * Icons by folder
-* Choose complete folder or fileName
-* Home Page, show analyzed repositories as cards
+* Choose complete folder or fileName ?
 
 ### Optional
 * Logged in users have 20 free requests to the AI

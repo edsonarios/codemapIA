@@ -72,8 +72,24 @@ export default function Home() {
     setLoading(false)
   }
 
+  const handledDB = async () => {
+    try {
+      const res = await fetch('/api/test')
+      const data = await res.json()
+      console.log(data)
+    } catch (error: any) {
+      console.log(error)
+    }
+  }
+
   return (
     <main className="relative flex min-h-screen flex-col items-center p-24 h-full">
+      <button
+        className="bg-blue-500 p-2 rounded-md"
+        onClick={() => handledDB()}
+      >
+        To DB Datas
+      </button>
       <div className="text-center text-balance">
         <h1 className="text-6xl mt-4">CodeMap AI</h1>
         <h2 className="text-2xl mt-4 text-[#5cc8f7]">

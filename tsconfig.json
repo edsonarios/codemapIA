@@ -20,8 +20,29 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "alwaysStrict": true,
+    "composite": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    // "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "outDir": "./dist",
+    "preserveConstEnums": true,
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "typeRoots": ["./node_modules/@types", "./src/config"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }
