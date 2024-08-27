@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 import { paramViewPageName } from '@/components/utils/constants'
 import { getNameRepository } from '@/components/utils/utils'
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 export interface Repository {
   name: string
   url: string
@@ -11,18 +13,17 @@ export interface Repository {
 }
 export default function Home() {
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
-  const [repoUrl, setRepoUrl] = useState('')
+  const [repoUrl, setRepoUrl] = useState(
+    'https://github.com/midudev/hackaton-vercel-2024',
+  )
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL
     const fetchRepos = async () => {
-      console.log(API_URL)
       const res = await fetch(`${API_URL}/repositories`)
       const data: Repository[] = await res.json()
-      console.log(data)
       setAnalyzedRepos(data)
     }
     fetchRepos()
@@ -52,7 +53,7 @@ export default function Home() {
     setErrorRepoUrl('')
     setLoading(true)
     try {
-      const res = await fetch('/api/allRepositories', {
+      const res = await fetch(`${API_URL}/repositories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,8 +61,10 @@ export default function Home() {
         body: JSON.stringify({ url: repoUrl }),
       })
       const data = await res.json()
-      console.log(data)
-      if (res.status === 200) {
+      // console.log(res.status)
+      // console.log(data)
+
+      if (res.status === 201) {
         router.push(
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
         )

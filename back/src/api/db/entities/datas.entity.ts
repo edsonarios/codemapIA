@@ -38,5 +38,5 @@ export class Datas {
 
   @OneToOne(() => Repositories, { cascade: true })
   @JoinColumn()
-  data: Repositories
+  repository: Repositories
 }

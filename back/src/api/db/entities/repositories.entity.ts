@@ -32,6 +32,6 @@ export class Repositories {
   })
   updatedAt: Date
 
-  @OneToOne(() => Datas, (data) => data.data)
-  repository: Datas
+  @OneToOne(() => Datas, (data) => data.repository)
+  data: Datas
 }
