@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { paramViewPageName } from '@/components/utils/constants'
 import { getNameRepository } from '@/components/utils/utils'
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+import { API_URL } from './view/utils/utils'
 
 export interface Repository {
   name: string
@@ -64,7 +63,7 @@ export default function Home() {
       // console.log(res.status)
       // console.log(data)
 
-      if (res.status === 201) {
+      if (res.ok) {
         router.push(
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
         )

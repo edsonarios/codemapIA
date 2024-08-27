@@ -37,23 +37,23 @@ export function PanelInformation({
   }, [keyInfoPanel])
 
   //! Get contentFiles and fileDetails
-  useEffect(() => {
-    const fetchData = async () => {
-      if (paramRepoName === '') return
-      const contentResponse = await fetch(
-        `/api/contentFiles?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
-      )
-      const contentData = await contentResponse.json()
-      setContentFiles(contentData)
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (paramRepoName === '') return
+  //     const contentResponse = await fetch(
+  //       `/api/contentFiles?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
+  //     )
+  //     const contentData = await contentResponse.json()
+  //     setContentFiles(contentData)
 
-      const detailsResponse = await fetch(
-        `/api/fileDetails?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
-      )
-      const detailData = await detailsResponse.json()
-      setFileDetails(detailData)
-    }
-    fetchData()
-  }, [paramRepoName])
+  //     const detailsResponse = await fetch(
+  //       `/api/fileDetails?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
+  //     )
+  //     const detailData = await detailsResponse.json()
+  //     setFileDetails(detailData)
+  //   }
+  //   fetchData()
+  // }, [paramRepoName])
 
   const handledGetDetailsByIA = async (force = false) => {
     setLoading(true)

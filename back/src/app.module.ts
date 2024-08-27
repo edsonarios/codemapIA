@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { f } from './common/nestConfig/logger'
 import { RepositoriesModule } from './api/repositories/repositories.module'
 import { DbModule } from './api/db/db.module'
+import { DataModule } from './api/data/data.module'
 
 const { STAGE } = process.env
 const logger = new Logger('AppModule')
@@ -39,8 +40,9 @@ const logger = new Logger('AppModule')
         }
       },
     }),
-    RepositoriesModule,
     DbModule,
+    RepositoriesModule,
+    DataModule,
   ],
   controllers: [],
   providers: [],

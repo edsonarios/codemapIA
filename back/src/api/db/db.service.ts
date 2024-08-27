@@ -79,4 +79,17 @@ export class DBService {
       throw new Error(error)
     }
   }
+
+  async getDatas(partialUrl: string) {
+    this.logger.log('getDatas')
+    try {
+      return await this.datasRepository.findOne({
+        relations: ['repository'],
+        where: { repository: { url: `https://github.com/${partialUrl}` } },
+      })
+    } catch (error) {
+      this.logger.error(`getDatas:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
 }

@@ -9,6 +9,7 @@ import {
 import { paramViewPageName } from '@/components/utils/constants'
 import { Flow } from './flow'
 import { Toaster, toast } from 'sonner'
+import { API_URL } from '../utils/utils'
 
 export default function GraphPage() {
   const searchParams = useSearchParams()
@@ -19,6 +20,8 @@ export default function GraphPage() {
     setStoreNodesAndEdges,
     isDisableButton,
     setIsDisableButton,
+    setContentFiles,
+    setFileDetails,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
@@ -41,26 +44,25 @@ export default function GraphPage() {
   }
 
   useEffect(() => {
-    const fetchStructure = async () => {
-      // console.log(paramRepository)
+    const fetchDatas = async () => {
       try {
         const res = await fetch(
-          `/api/nodesAndEdges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
+          `${API_URL}/data?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
         )
-        // console.log(res)
         if (!res.ok) {
-          console.error('Error fetching structure:', res)
+          console.error('Error fetching datas:', res)
           return
         }
-        const nodesAndEdgesResponse = await res.json()
-        // console.log(nodesAndEdgesResponse)
+        const response = await res.json()
         setParamRepoName(paramRepository)
-        setStoreNodesAndEdges(nodesAndEdgesResponse)
+        setStoreNodesAndEdges(response.nodesAndEdges)
+        setContentFiles(response.contentFiles)
+        setFileDetails(response.fileDetails)
       } catch (error) {
-        console.error('Error fetching structure:', error)
+        console.error('Error fetching datas:', error)
       }
     }
-    fetchStructure()
+    fetchDatas()
     const storedApiKey = localStorage.getItem('OPENAI_API_KEY')
     // console.log('storedApiKey', storedApiKey)
     if (storedApiKey) {
@@ -71,7 +73,7 @@ export default function GraphPage() {
   const saveNodesAndEdges = async () => {
     setIsDisableButton(true)
     const res = await fetch(
-      `/api/nodesAndEdges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
+      `${API_URL}/nodes-and-edges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
       {
         method: 'POST',
         headers: {
