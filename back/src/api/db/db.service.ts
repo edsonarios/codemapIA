@@ -5,6 +5,7 @@ import { Repositories } from './entities/repositories.entity'
 import { f } from 'src/common/nestConfig/logger'
 import { Datas } from './entities/datas.entity'
 import { formatRepositoryName } from 'src/common/utils'
+import { UpdateDataDto } from '../data/dto/update-data.dto'
 
 @Injectable()
 export class DBService {
@@ -89,6 +90,16 @@ export class DBService {
       })
     } catch (error) {
       this.logger.error(`getDatas:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
+  async updateDatas(dataId, updateDataDto: UpdateDataDto) {
+    this.logger.log('updateDatas')
+    try {
+      return await this.datasRepository.update(dataId, updateDataDto)
+    } catch (error) {
+      this.logger.error(`updateDatas:_ ${f(error)}`)
       throw new Error(error)
     }
   }

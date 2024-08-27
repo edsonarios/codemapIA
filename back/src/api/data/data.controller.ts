@@ -2,16 +2,17 @@ import {
   Controller,
   Get,
   // Post,
-  // Body,
-  // Patch,
+  Body,
+  Patch,
   // Delete,
   // Param,
   Logger,
   Query,
+  Param,
 } from '@nestjs/common'
 import { DataService } from './data.service'
 // import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
-// import { UpdateNodesAndEdgeDto } from './dto/update-nodes-and-edge.dto'
+import { UpdateDataDto } from './dto/update-data.dto'
 
 @Controller('data')
 export class DataController {
@@ -34,13 +35,14 @@ export class DataController {
   //   return this.nodesAndEdgesService.create(createNodesAndEdgeDto)
   // }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateNodesAndEdgeDto: UpdateNodesAndEdgeDto,
-  // ) {
-  //   return this.nodesAndEdgesService.update(+id, updateNodesAndEdgeDto)
-  // }
+  @Patch(':dataId')
+  update(
+    @Param('dataId') dataId: string,
+    @Body() updateDataDto: UpdateDataDto,
+  ) {
+    this.logger.log(`update: ${dataId}`)
+    return this.nodesAndEdgesService.update(dataId, updateDataDto)
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

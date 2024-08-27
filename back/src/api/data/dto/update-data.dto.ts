@@ -1,4 +1,17 @@
 import { PartialType } from '@nestjs/mapped-types'
-import { CreateNodesAndEdgeDto } from './create-data.dto'
+import { CreateDataDto } from './create-data.dto'
+import { IsOptional } from 'class-validator'
 
-export class UpdateNodesAndEdgeDto extends PartialType(CreateNodesAndEdgeDto) {}
+export class UpdateDataDto extends PartialType(CreateDataDto) {
+  @IsOptional()
+  contentFiles: object | null
+
+  @IsOptional()
+  fileDetails: object | null
+
+  @IsOptional()
+  nodesAndEdges: object | null
+
+  @IsOptional()
+  structure: object | null
+}

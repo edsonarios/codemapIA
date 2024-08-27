@@ -5,6 +5,9 @@ export interface IRepositoryStore {
   structure: Record<string, string[]>
   setStructure: (structure: Record<string, string[]>) => void
 
+  dataId: string
+  setDataId: (dataId: string) => void
+
   fileDetails: Record<string, string>
   setFileDetails: (fileDetails: Record<string, string>) => void
 
@@ -23,6 +26,9 @@ export interface IRepositoryStore {
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   structure: {},
   setStructure: (structure) => set({ structure }),
+
+  dataId: '',
+  setDataId: (dataId) => set({ dataId }),
 
   fileDetails: {},
   setFileDetails: (fileDetails) => set({ fileDetails }),

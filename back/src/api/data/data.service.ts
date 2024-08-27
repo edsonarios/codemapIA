@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 // import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
-// import { UpdateNodesAndEdgeDto } from './dto/update-nodes-and-edge.dto'
+import { UpdateDataDto } from './dto/update-data.dto'
 import { DBService } from '../db/db.service'
 import { f } from 'src/common/nestConfig/logger'
 
@@ -30,9 +30,15 @@ export class DataService {
   //   return `This action returns all nodesAndEdges`
   // }
 
-  // update(id: number, updateNodesAndEdgeDto: UpdateNodesAndEdgeDto) {
-  //   return `This action updates a #${id} nodesAndEdge`
-  // }
+  async update(dataId: string, updateDataDto: UpdateDataDto) {
+    this.logger.log('update')
+    try {
+      await this.dbService.updateDatas(dataId, updateDataDto)
+      return { response: 'Saved successfully' }
+    } catch (error) {
+      this.logger.error(`update:_ ${f(error)}`)
+    }
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} nodesAndEdge`

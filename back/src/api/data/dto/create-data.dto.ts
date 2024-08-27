@@ -1,1 +1,1 @@
-export class CreateNodesAndEdgeDto {}
+export class CreateDataDto {}

@@ -22,6 +22,8 @@ export default function GraphPage() {
     setIsDisableButton,
     setContentFiles,
     setFileDetails,
+    setDataId,
+    dataId,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
@@ -55,6 +57,7 @@ export default function GraphPage() {
         }
         const response = await res.json()
         setParamRepoName(paramRepository)
+        setDataId(response.id)
         setStoreNodesAndEdges(response.nodesAndEdges)
         setContentFiles(response.contentFiles)
         setFileDetails(response.fileDetails)
@@ -72,16 +75,13 @@ export default function GraphPage() {
 
   const saveNodesAndEdges = async () => {
     setIsDisableButton(true)
-    const res = await fetch(
-      `${API_URL}/nodes-and-edges?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ body: storeNodesAndEdges }),
+    const res = await fetch(`${API_URL}/data/${dataId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify({ nodesAndEdges: storeNodesAndEdges }),
+    })
     if (!res.ok) {
       toast.error('Error to save data')
       return
