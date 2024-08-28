@@ -17,10 +17,5 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"],
-      "@common/*": ["src/common/*"],
-      "@api/*": ["src/api/*"],
-    }
   }
 }

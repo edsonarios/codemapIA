@@ -1,10 +1,10 @@
 import { Logger, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { f } from '@/common/nestConfig/logger'
 import { RepositoriesModule } from './api/repositories/repositories.module'
 import { DbModule } from './api/db/db.module'
 import { DataModule } from './api/data/data.module'
+import { f } from './common/nestConfig/logger'
 
 const { STAGE } = process.env
 const logger = new Logger('AppModule')
