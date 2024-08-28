@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common'
 // import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
 import { UpdateDataDto } from './dto/update-data.dto'
 import { DBService } from '../db/db.service'
-import { f } from 'src/common/nestConfig/logger'
+import { f } from '@/common/nestConfig/logger'
 import { PatchDataDto } from './dto/patch-data.dto'
 
 @Injectable()
