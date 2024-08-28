@@ -7,7 +7,7 @@ import {
   layoutNodes,
   separateGraphs,
 } from './utils'
-import { routePath } from 'src/common/utils'
+import { routePath } from '../../common/utils'
 
 const ignoreFolders = [
   'node_modules',

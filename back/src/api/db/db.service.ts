@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { Repositories } from './entities/repositories.entity'
 import { f } from '../../common/nestConfig/logger'
 import { Datas } from './entities/datas.entity'
-import { formatRepositoryName } from 'src/common/utils'
+import { formatRepositoryName } from '../../common/utils'
 import { UpdateDataDto } from '../data/dto/update-data.dto'
 
 @Injectable()

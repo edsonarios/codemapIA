@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 // import { UpdateRepositoryDto } from './dto/update-repository.dto'
 import { DBService } from '../db/db.service'
-import { routePath } from 'src/common/utils'
+import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
 
