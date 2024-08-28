@@ -8,7 +8,7 @@ import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
-import { f } from 'src/common/nestConfig/logger'
+import { f } from '../../common/nestConfig/logger'
 
 @Injectable()
 export class RepositoriesService {
