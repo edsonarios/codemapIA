@@ -5,7 +5,6 @@ import {
   IRepositoryStore,
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
-import { paramViewPageName } from '@/components/utils/constants'
 import { API_URL } from '../utils/utils'
 
 export function PanelInformation({
@@ -17,15 +16,8 @@ export function PanelInformation({
   setKeyInfoPanel: (key: string | null) => void
   apiKey: string
 }) {
-  const {
-    contentFiles,
-    setContentFiles,
-    fileDetails,
-    setFileDetails,
-    structure,
-    paramRepoName,
-    dataId,
-  } = useRepositoryStore<IRepositoryStore>((state) => state)
+  const { contentFiles, fileDetails, setFileDetails, structure, dataId } =
+    useRepositoryStore<IRepositoryStore>((state) => state)
   const [codeContent, setCodeContent] = useState<string>('')
   const [detailByIA, setDetailByIA] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -37,25 +29,6 @@ export function PanelInformation({
       setDetailByIA(fileDetails[keyInfoPanel] || '')
     }
   }, [keyInfoPanel])
-
-  //! Get contentFiles and fileDetails
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (paramRepoName === '') return
-  //     const contentResponse = await fetch(
-  //       `/api/contentFiles?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
-  //     )
-  //     const contentData = await contentResponse.json()
-  //     setContentFiles(contentData)
-
-  //     const detailsResponse = await fetch(
-  //       `/api/fileDetails?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
-  //     )
-  //     const detailData = await detailsResponse.json()
-  //     setFileDetails(detailData)
-  //   }
-  //   fetchData()
-  // }, [paramRepoName])
 
   const handledGetDetailsByIA = async (force = false) => {
     setLoading(true)
