@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common'
 import { UpdateDataDto } from './dto/update-data.dto'
 import { DBService } from '../db/db.service'
 import { f } from 'src/common/nestConfig/logger'
+import { PatchDataDto } from './dto/patch-data.dto'
 
 @Injectable()
 export class DataService {
@@ -34,6 +35,18 @@ export class DataService {
     this.logger.log('update')
     try {
       await this.dbService.updateDatas(dataId, updateDataDto)
+      return { response: 'Saved successfully' }
+    } catch (error) {
+      this.logger.error(`update:_ ${f(error)}`)
+    }
+  }
+
+  async patch(dataId: string, patchDataDto: PatchDataDto) {
+    this.logger.log('patch')
+    try {
+      const currentData = await this.dbService.getDataById(dataId)
+      currentData.fileDetails[patchDataDto.key] = patchDataDto.detail
+      await this.dbService.updateDatas(dataId, currentData)
       return { response: 'Saved successfully' }
     } catch (error) {
       this.logger.error(`update:_ ${f(error)}`)

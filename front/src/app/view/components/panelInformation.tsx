@@ -6,6 +6,7 @@ import {
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
 import { paramViewPageName } from '@/components/utils/constants'
+import { API_URL } from '../utils/utils'
 
 export function PanelInformation({
   keyInfoPanel,
@@ -23,6 +24,7 @@ export function PanelInformation({
     setFileDetails,
     structure,
     paramRepoName,
+    dataId,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [codeContent, setCodeContent] = useState<string>('')
   const [detailByIA, setDetailByIA] = useState<string>('')
@@ -148,19 +150,16 @@ Este es un ejemplo de output que quiero,
       }
       // console.log(originalResponse)
       //! Save details
-      await fetch(
-        `/api/fileDetails?${paramViewPageName}=${encodeURIComponent(paramRepoName)}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            key: keyInfoPanel,
-            detail: detailsResponse,
-          }),
+      await fetch(`${API_URL}/data/${dataId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          key: keyInfoPanel,
+          detail: detailsResponse,
+        }),
+      })
       setFileDetails({ ...fileDetails, [keyInfoPanel]: detailsResponse })
       setLoading(false)
     } else {

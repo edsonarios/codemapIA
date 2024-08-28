@@ -76,7 +76,7 @@ export default function GraphPage() {
   const saveNodesAndEdges = async () => {
     setIsDisableButton(true)
     const res = await fetch(`${API_URL}/data/${dataId}`, {
-      method: 'PATCH',
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },

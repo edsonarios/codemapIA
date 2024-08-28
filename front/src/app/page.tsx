@@ -60,9 +60,6 @@ export default function Home() {
         body: JSON.stringify({ url: repoUrl }),
       })
       const data = await res.json()
-      // console.log(res.status)
-      // console.log(data)
-
       if (res.ok) {
         router.push(
           `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,

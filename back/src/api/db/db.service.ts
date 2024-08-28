@@ -81,6 +81,18 @@ export class DBService {
     }
   }
 
+  async getDataById(dataId: string) {
+    this.logger.log('getDatas')
+    try {
+      return await this.datasRepository.findOne({
+        where: { id: dataId },
+      })
+    } catch (error) {
+      this.logger.error(`getDatas:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async getDatas(partialUrl: string) {
     this.logger.log('getDatas')
     try {
