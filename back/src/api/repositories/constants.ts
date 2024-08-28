@@ -2,6 +2,7 @@ export const ignoreFolders = [
   'node_modules',
   'cdk.out',
   'dist',
+  'dist-electron',
   'coverage',
   'test',
   'tests',
@@ -19,10 +20,15 @@ export const ignoreFolders = [
   'dist-electron',
   'release',
   'postgres',
+  '.vscode',
+  '.next',
+  '.idea',
+  '.astro',
 ]
 export const ignoreFiles = ['package-lock.json', 'yarn.lock', 'pnpm-lock.yaml']
 export const ignorePatterns = [
   /\.env.*/,
+  /\.env/,
   /\.ico/,
   /\.png/,
   /\.webp/,

@@ -20,17 +20,21 @@ https://codemap-ia.vercel.app/
 If you want a detailed explanation by AI, you can set your ApiKey via the web (not mandatory), you can even analyze your entire repository to get a graphical visualization.
 
 ## Know Issues
-* Not support imports alias - (Fixed) ✅
-* Just supports projects js, ts, tsx
+* Plfw, need to fix:
+src/components/Navbar/Navbar.astro
+  import ArrowLink from "./IconArrowLink.astro"; ✅
+
+  refer src/components/Footer/IconArrowLink.astro ❌
+  refer src/components/Navbar/IconArrowLink.astro ✅
 
 ## To do
 * Save current position from nodes ✅
 * Improve view graphs ✅
 * Added tooltip complete path ✅
 * Use DB for datas ✅
-* With dedicated back, now support astro project
-* If User not login, just allow analyze 1 repository
+* With dedicated back, now support astro project ✅
 * Login for users (Github, google) Oauth, unlimited analyze repositories
+* If User not login, just allow analyze 1 repository
 * Animation panelInformation
 * Home Page, show analyzed repositories as cards
 * Different colors by folders to nodes
