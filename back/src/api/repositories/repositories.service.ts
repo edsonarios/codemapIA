@@ -1,21 +1,34 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import extract from 'extract-zip'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 // import { UpdateRepositoryDto } from './dto/update-repository.dto'
 import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
+import { f } from 'src/common/nestConfig/logger'
 
 @Injectable()
 export class RepositoriesService {
+  private readonly logger = new Logger(RepositoriesService.name)
   constructor(private readonly dbService: DBService) {}
 
   async findAll() {
     try {
-      return await this.dbService.getRepositories()
+      const response = await this.dbService.getRepositories()
+      const auxResponse = {
+        response: response.map((repo) => {
+          return {
+            id: repo.id,
+            name: repo.name,
+            url: repo.url,
+          }
+        }),
+      }
+      this.logger.debug(`response:_ ${f(auxResponse)}`)
+      return response
     } catch (error) {
       throw new Error(error)
     }

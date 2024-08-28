@@ -163,12 +163,16 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
 }
 
 export function f(...messages: any[]) {
-  // const { STAGE } = process.env
+  const { STAGE } = process.env
   return messages
     .map((message) => {
       return typeof message === 'object'
-        ? inspect(message, { depth: null, colors: true })
+        ? inspect(message, {
+            depth: null,
+            colors: STAGE === 'local' ? true : false,
+          })
         : message
+
       // if (STAGE === 'local') {
       //   return typeof message === 'object'
       //     ? inspect(message, { depth: null, colors: true })
