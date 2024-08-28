@@ -105,61 +105,6 @@ export class CustomLogger extends ConsoleLogger implements LoggerService {
       this.logger.info(`${level} [${context}] ${message}`)
     }
   }
-
-  // Show all logs
-  fatal(message: string) {
-    if (message === 'flushLogs') {
-      this.flushLogs()
-    }
-  }
-
-  private storeLog(
-    level: string,
-    message: string,
-    context?: string,
-    trace?: string,
-  ) {
-    if (ignoreContext.includes(context)) return
-    const messageToLog = `${level} ${context ? `[${context}]` : ''} ${message}`
-    const logEntry = { message: messageToLog }
-    if (trace) {
-      logEntry['trace'] = trace
-    }
-    this.logs.push(logEntry)
-    if (context === 'NestApplication') {
-      this.flushLogs()
-    }
-  }
-
-  flushLogs() {
-    const parseLogs: any[] = []
-    for (let index = 0; index < this.logs.length; index++) {
-      const currentLog = this.logs[index]
-      const messageAndObject = (currentLog.message as string).split(':_')
-      if (messageAndObject.length > 1) {
-        parseLogs.push(
-          f({
-            level: currentLog.level,
-            message: messageAndObject[0],
-            context: currentLog.context,
-            trace: currentLog.trace,
-          }),
-        )
-        for (let indexJ = 1; indexJ < messageAndObject.length; indexJ++) {
-          parseLogs.push(messageAndObject[indexJ])
-        }
-      } else {
-        parseLogs.push(currentLog)
-      }
-    }
-    const toShowMessages = parseLogs.map((log) => f(log)).join(' ')
-    this.logger.info(toShowMessages)
-    this.clearLogs()
-  }
-
-  private clearLogs() {
-    this.logs = []
-  }
 }
 
 export function f(...messages: any[]) {
@@ -172,16 +117,6 @@ export function f(...messages: any[]) {
             colors: STAGE === 'local' ? true : false,
           })
         : message
-
-      // if (STAGE === 'local') {
-      //   return typeof message === 'object'
-      //     ? inspect(message, { depth: null, colors: true })
-      //     : message
-      // } else {
-      //   return typeof message === 'object' ? JSON.stringify(message) : message
-      // }
     })
     .join(' ')
 }
-
-const ignoreContext = ['InstanceLoader', 'RouterExplorer', 'RoutesResolver']

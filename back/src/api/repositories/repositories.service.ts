@@ -1,9 +1,9 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import extract from 'extract-zip'
+// import extract from 'extract-zip' // work in prod
+import * as extract from 'extract-zip'
 import { Injectable, Logger } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
-// import { UpdateRepositoryDto } from './dto/update-repository.dto'
 import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
 import axios from 'axios'

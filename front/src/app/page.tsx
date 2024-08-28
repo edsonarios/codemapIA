@@ -81,11 +81,6 @@ export default function Home() {
           Intelligent mapping of code structure with detailed AI explanations
         </h2>
         <h3 className="mt-4 text-xl text-gray-500">
-          Paste your GitHub repository URL to analyze its code structure. If the
-          repository has been previously analyzed, you can view the results
-          instantly.
-        </h3>
-        <h3 className="mt-4 text-xl text-gray-500">
           Example: https://github.com/edsonarios/play-factory-dev
         </h3>
       </div>
@@ -144,11 +139,6 @@ export default function Home() {
         </div>
       </div>
       <footer className="absolute text-white text-center w-full bottom-0 p-6">
-        <p className="text-center text-sm text-gray-600">
-          <strong>Note:</strong> Scanned repositories are only saved temporarily
-          while the Vercel lambda function is active. Upon restart, saved
-          repositories are lost.
-        </p>
         <p className="text-center text-sm text-gray-100 mt-4">
           &copy; 2024 CodeMap IA - Edson Añawaya Rios.
         </p>

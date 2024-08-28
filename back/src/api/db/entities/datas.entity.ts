@@ -36,7 +36,10 @@ export class Datas {
   })
   updatedAt: Date
 
-  @OneToOne(() => Repositories, { cascade: true })
+  @OneToOne(() => Repositories, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   repository: Repositories
 }
