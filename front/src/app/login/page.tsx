@@ -7,9 +7,12 @@ import { ring } from 'ldrs'
 import User from './icons/user'
 import Password from './icons/password'
 import { BuiltInProviderType } from 'next-auth/providers/index'
+import { useRouter } from 'next/navigation'
+import BackHome from '@/components/backHome'
 ring.register()
 
 export default function Login() {
+  const router = useRouter()
   const [email, setEmail] = useState('user@mail.com')
   const [password, setPassword] = useState('123')
   const [error, setError] = useState('')
@@ -20,6 +23,7 @@ export default function Login() {
     let result
     if (provider === 'credentials') {
       result = await signIn(provider, {
+        redirect: false,
         email,
         password,
         callbackUrl: '/',
@@ -29,17 +33,20 @@ export default function Login() {
         callbackUrl: '/',
       })
     }
-
     if (result?.error) {
       setError(result.error)
     } else {
       setError('')
+      if (provider === 'credentials') {
+        router.push(`/`)
+      }
     }
     setLoading(false)
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="relative flex justify-center items-center h-screen">
+      <BackHome />
       <div className="relative h-[520px] w-[400px] rounded flex items-center justify-center overflow-hidden shadow-md shadow-slate-700">
         <div className="absolute z-10 size-full p-8 text-gray-100 space-y-4">
           <h1 className="text-2xl font-bold text-center ">Code Map - Login</h1>
@@ -51,7 +58,6 @@ export default function Login() {
               login('credentials')
             }}
           >
-            {error && <p className="text-red-500">{error}</p>}
             <div>
               <label className="block text-sm font-medium ">Email</label>
               <div className="flex items-center h-10 rounded border-2 border-gray-600">
@@ -90,6 +96,7 @@ export default function Login() {
             >
               Log in
             </button>
+            {error && <p className="text-red-500">{error}</p>}
           </form>
           <div className="flex items-center justify-center space-x-4">
             <span className="text-gray-400">------------ o ------------</span>

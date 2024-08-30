@@ -38,6 +38,21 @@ export class DBService {
     }
   }
 
+  async getUserByEmailForCredentials(email: string) {
+    this.logger.log('getUserByEmail')
+    try {
+      return await this.usersRepository.findOne({
+        where: {
+          email,
+          provider: 'credentials',
+        },
+      })
+    } catch (error) {
+      this.logger.error(`getUserByEmail:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async getRepositories() {
     this.logger.log('getRepositories')
     try {

@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import GitHubProvider from 'next-auth/providers/github'
+import { API_URL } from '@/app/view/utils/utils'
 
 const handler = NextAuth({
   providers: [
@@ -11,8 +12,18 @@ const handler = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        console.log('credentials', credentials)
-        const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' }
+        const response = await fetch(`${API_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
+        })
+
+        const user = await response.json()
+        if (!response.ok) {
+          throw new Error(user.message || 'Login failed')
+        }
         if (user) {
           return user
         } else {

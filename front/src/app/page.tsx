@@ -7,6 +7,7 @@ import { API_URL } from './view/utils/utils'
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
 import Profile from './profile'
+import UserLoged from './login/icons/userLoged'
 
 export interface Repository {
   name: string
@@ -88,7 +89,7 @@ export default function Home() {
       <div
         onMouseEnter={toggleDropdown}
         onMouseLeave={toggleDropdown}
-        className="flex flex-col items-center cursor-pointer absolute top-6 right-8 w-32"
+        className="flex flex-col items-center cursor-pointer absolute top-6 right-8 w-40"
       >
         <a
           className="flex items-center justify-center w-full text-md p-4 rounded-md hover:bg-zinc-700 "
@@ -96,7 +97,7 @@ export default function Home() {
           title="Go to Login Page"
         >
           <div className="mr-2">
-            {session?.user?.image ? (
+            {session?.user?.name && session?.user?.image ? (
               <Image
                 src={session?.user?.image || ''}
                 alt="Image profile"
@@ -104,6 +105,8 @@ export default function Home() {
                 height={32}
                 className="rounded-full"
               />
+            ) : session?.user?.name ? (
+              <UserLoged className="stroke-green-700" />
             ) : (
               <Profile />
             )}
@@ -115,7 +118,7 @@ export default function Home() {
             onClick={() => signOut({ redirect: false })}
             className="block text-sm bg-red-500 rounded-md hover:bg-red-400 text-center w-full p-2"
           >
-            Cerrar sesión
+            Sign Out
           </button>
         )}
       </div>
