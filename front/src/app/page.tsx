@@ -15,7 +15,7 @@ export interface Repository {
   description: string
 }
 export default function Home() {
-  const { data: session, status, update } = useSession()
+  const { data: session, status } = useSession()
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState(
     'https://github.com/midudev/hackaton-vercel-2024',

@@ -38,17 +38,27 @@ export class DBService {
     }
   }
 
-  async getUserByEmailForCredentials(email: string) {
-    this.logger.log('getUserByEmail')
+  async getUserByEmailAndProvider(email: string, provider: string) {
+    this.logger.log('getUserByEmailAndProvider')
     try {
       return await this.usersRepository.findOne({
         where: {
           email,
-          provider: 'credentials',
+          provider,
         },
       })
     } catch (error) {
-      this.logger.error(`getUserByEmail:_ ${f(error)}`)
+      this.logger.error(`getUserByEmailAndProvider:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
+  async updateUser(user: Users, updateUserDto: CreateUserDto) {
+    this.logger.log('updateUser')
+    try {
+      return await this.usersRepository.update(user.id, updateUserDto)
+    } catch (error) {
+      this.logger.error(`updateUser:_ ${f(error)}`)
       throw new Error(error)
     }
   }
@@ -74,7 +84,7 @@ export class DBService {
   }
 
   async getRepositoriesByEmail(email: string) {
-    this.logger.log('getRepositories')
+    this.logger.log('getRepositoriesByEmail')
     try {
       const response = await this.repoRepository.find({
         where: {
@@ -88,7 +98,7 @@ export class DBService {
 
       return response
     } catch (error) {
-      this.logger.error(`getRepositories:_ ${f(error)}`)
+      this.logger.error(`getRepositoriesByEmail:_ ${f(error)}`)
       throw new Error(error)
     }
   }
@@ -143,13 +153,13 @@ export class DBService {
   }
 
   async getDataById(dataId: string) {
-    this.logger.log('getDatas')
+    this.logger.log('getDataById')
     try {
       return await this.datasRepository.findOne({
         where: { id: dataId },
       })
     } catch (error) {
-      this.logger.error(`getDatas:_ ${f(error)}`)
+      this.logger.error(`getDataById:_ ${f(error)}`)
       throw new Error(error)
     }
   }

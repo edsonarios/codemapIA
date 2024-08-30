@@ -3,6 +3,7 @@ import { CreateLoginDto } from './dto/create-login.dto'
 import { DBService } from '../db/db.service'
 import { f } from '../../common/nestConfig/logger'
 import * as bcrypt from 'bcrypt'
+import { CreateUserDto } from '../users/dto/create-user.dto'
 
 @Injectable()
 export class LoginService {
@@ -11,9 +12,12 @@ export class LoginService {
 
   async login(createLoginDto: CreateLoginDto) {
     this.logger.log('login')
-    const { email, password } = createLoginDto
+    const { email, password, provider } = createLoginDto
     try {
-      const user = await this.dbService.getUserByEmailForCredentials(email)
+      const user = await this.dbService.getUserByEmailAndProvider(
+        email,
+        provider,
+      )
       if (user) {
         this.logger.debug('user found')
         const comparePassword = await bcrypt.compare(password, user.password)
@@ -28,6 +32,32 @@ export class LoginService {
       }
     } catch (error) {
       this.logger.error(`login:_ ${f(error)}`)
+      throw error
+    }
+  }
+
+  async loginByProvider(loginProviderDto: CreateUserDto) {
+    this.logger.log('loginByProvider')
+    const { name, email, provider, image } = loginProviderDto
+    try {
+      const user = await this.dbService.getUserByEmailAndProvider(
+        email,
+        provider,
+      )
+      if (!user) {
+        this.logger.warn('creating new user')
+        const newUser = await this.dbService.createUser({
+          ...loginProviderDto,
+        })
+        return newUser
+      }
+      if (name !== user.name || image !== user.image) {
+        this.logger.warn('updating user')
+        return await this.dbService.updateUser(user, loginProviderDto)
+      }
+      return user
+    } catch (error) {
+      this.logger.error(`loginByProvider:_ ${f(error)}`)
       throw error
     }
   }

@@ -8,4 +8,8 @@ export class CreateLoginDto {
   @IsString()
   @IsNotEmpty()
   password: string
+
+  @IsString()
+  @IsNotEmpty()
+  provider: string
 }

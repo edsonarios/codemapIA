@@ -17,7 +17,7 @@ const handler = NextAuth({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(credentials),
+          body: JSON.stringify({ ...credentials, provider: 'credentials' }),
         })
 
         const user = await response.json()
@@ -36,6 +36,27 @@ const handler = NextAuth({
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
   ],
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === 'github') {
+        await fetch(`${API_URL}/login`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: user.name,
+            email: user.email,
+            password: '',
+            image: user.image,
+            provider: 'github',
+          }),
+        })
+      }
+
+      return true
+    },
+  },
   pages: {
     signIn: '/login',
   },
