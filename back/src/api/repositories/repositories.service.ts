@@ -35,10 +35,10 @@ export class RepositoriesService {
     }
   }
 
-  async findByEmail(email: string) {
-    this.logger.log('findByEmail')
+  async findById(id: string) {
+    this.logger.log('findById')
     try {
-      return await this.dbService.getRepositoriesByEmail(email)
+      return await this.dbService.getRepositoriesById(id)
     } catch (error) {
       throw error
     }

@@ -27,10 +27,10 @@ export default function Home() {
   useEffect(() => {
     const fetchRepos = async () => {
       if (status === 'loading') return
+      // console.log('session', session)
       if (session?.user?.email) {
-        const res = await fetch(
-          `${API_URL}/repositories/${session?.user?.email}`,
-        )
+        const userId = (session.user as any).id || ''
+        const res = await fetch(`${API_URL}/repositories/${userId}`)
         const data: Repository[] = await res.json()
         setAnalyzedRepos(data)
       } else {

@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import GitHubProvider from 'next-auth/providers/github'
+import GoogleProvider from 'next-auth/providers/google'
 import { API_URL } from '@/app/view/utils/utils'
 
 const handler = NextAuth({
@@ -35,25 +36,40 @@ const handler = NextAuth({
       clientId: process.env.GITHUB_ID as string,
       clientSecret: process.env.GITHUB_SECRET as string,
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
   ],
   callbacks: {
-    async signIn({ user, account }) {
-      if (account?.provider === 'github') {
-        await fetch(`${API_URL}/login`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: user.name,
-            email: user.email,
-            password: '',
-            image: user.image,
-            provider: 'github',
-          }),
-        })
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        token.id = user.id
       }
+      return token
+    },
 
+    async session({ session, token }: any) {
+      session.user.id = token.id
+      return session
+    },
+
+    async signIn({ user, account }) {
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          password: '',
+          image: user.image,
+          provider: account?.provider,
+        }),
+      })
+      const data = await response.json()
+      user.id = data.id
       return true
     },
   },

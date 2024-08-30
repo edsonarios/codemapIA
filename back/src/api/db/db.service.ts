@@ -83,22 +83,19 @@ export class DBService {
     }
   }
 
-  async getRepositoriesByEmail(email: string) {
-    this.logger.log('getRepositoriesByEmail')
+  async getRepositoriesById(id: string) {
+    this.logger.log('getRepositoriesById')
     try {
-      const response = await this.repoRepository.find({
+      return await this.repoRepository.find({
         where: {
-          user: { email },
+          user: { id },
         },
         order: {
           createdAt: 'ASC',
         },
       })
-      this.logger.log(`response:_ ${response.length}`)
-
-      return response
     } catch (error) {
-      this.logger.error(`getRepositoriesByEmail:_ ${f(error)}`)
+      this.logger.error(`getRepositoriesById:_ ${f(error)}`)
       throw new Error(error)
     }
   }
