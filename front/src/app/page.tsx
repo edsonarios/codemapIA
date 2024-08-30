@@ -4,6 +4,9 @@ import { useRouter } from 'next/navigation'
 import { paramViewPageName } from '@/components/utils/constants'
 import { getNameRepository } from '@/components/utils/utils'
 import { API_URL } from './view/utils/utils'
+import Image from 'next/image'
+import { signOut, useSession } from 'next-auth/react'
+import Profile from './profile'
 
 export interface Repository {
   name: string
@@ -11,6 +14,7 @@ export interface Repository {
   description: string
 }
 export default function Home() {
+  const { data: session, status, update } = useSession()
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState(
     'https://github.com/midudev/hackaton-vercel-2024',
@@ -73,8 +77,49 @@ export default function Home() {
     setLoading(false)
   }
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen)
+  }
+
+  if (status === 'loading') return <div>Loading...</div>
   return (
     <main className="relative flex min-h-screen flex-col items-center p-24 h-full">
+      <div
+        onMouseEnter={toggleDropdown}
+        onMouseLeave={toggleDropdown}
+        className="flex flex-col items-center cursor-pointer absolute top-6 right-8 w-44"
+      >
+        <a
+          className="flex items-center justify-center w-full text-md p-4 rounded-md hover:bg-zinc-700 "
+          href={session ? '#' : '/login'}
+          title="Go to Login Page"
+        >
+          <div className="mr-2">
+            {session?.user?.image ? (
+              <Image
+                src={session?.user?.image || ''}
+                alt="Image profile"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            ) : (
+              <Profile />
+            )}
+          </div>
+          {session?.user?.name ? session?.user?.name : 'Log In'}
+        </a>
+        {isDropdownOpen && session && (
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="block text-sm bg-red-500 rounded-md hover:bg-red-400 text-center w-full p-2"
+          >
+            Cerrar sesión
+          </button>
+        )}
+      </div>
+
       <div className="text-center text-balance">
         <h1 className="text-6xl mt-4">CodeMap AI</h1>
         <h2 className="text-2xl mt-4 text-[#5cc8f7]">
