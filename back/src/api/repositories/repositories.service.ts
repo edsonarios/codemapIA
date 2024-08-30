@@ -16,6 +16,7 @@ export class RepositoriesService {
   constructor(private readonly dbService: DBService) {}
 
   async findAll() {
+    this.logger.log('findAll')
     try {
       const response = await this.dbService.getRepositories()
       const auxResponse = {
@@ -30,11 +31,21 @@ export class RepositoriesService {
       this.logger.debug(`response:_ ${f(auxResponse)}`)
       return response
     } catch (error) {
-      throw new Error(error)
+      throw error
+    }
+  }
+
+  async findByEmail(email: string) {
+    this.logger.log('findByEmail')
+    try {
+      return await this.dbService.getRepositoriesByEmail(email)
+    } catch (error) {
+      throw error
     }
   }
 
   async create(createRepositoryDto: CreateRepositoryDto) {
+    this.logger.log('create')
     const { url } = createRepositoryDto
     const repoName = url.replace('https://github.com/', '')
     const nameUser = repoName.split('/')[0]

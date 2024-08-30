@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { IsNull, Repository } from 'typeorm'
 import { Repositories } from './entities/repositories.entity'
 import { f } from '../../common/nestConfig/logger'
 import { Datas } from './entities/datas.entity'
@@ -56,7 +56,34 @@ export class DBService {
   async getRepositories() {
     this.logger.log('getRepositories')
     try {
-      const response = await this.repoRepository.find()
+      const response = await this.repoRepository.find({
+        where: {
+          user: IsNull(),
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+      })
+      this.logger.log(`response:_ ${response.length}`)
+
+      return response
+    } catch (error) {
+      this.logger.error(`getRepositories:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
+  async getRepositoriesByEmail(email: string) {
+    this.logger.log('getRepositories')
+    try {
+      const response = await this.repoRepository.find({
+        where: {
+          user: { email },
+        },
+        order: {
+          createdAt: 'ASC',
+        },
+      })
       this.logger.log(`response:_ ${response.length}`)
 
       return response

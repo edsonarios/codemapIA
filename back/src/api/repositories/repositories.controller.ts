@@ -30,9 +30,9 @@ export class RepositoriesController {
     return this.repositoriesService.findAll()
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.repositoriesService.findOne(+id)
+  @Get(':email')
+  findByEmail(@Param('email') email: string) {
+    return this.repositoriesService.findByEmail(email)
   }
 
   // @Patch(':id')

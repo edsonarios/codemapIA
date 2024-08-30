@@ -26,12 +26,21 @@ export default function Home() {
 
   useEffect(() => {
     const fetchRepos = async () => {
-      const res = await fetch(`${API_URL}/repositories`)
-      const data: Repository[] = await res.json()
-      setAnalyzedRepos(data)
+      if (status === 'loading') return
+      if (session?.user?.email) {
+        const res = await fetch(
+          `${API_URL}/repositories/${session?.user?.email}`,
+        )
+        const data: Repository[] = await res.json()
+        setAnalyzedRepos(data)
+      } else {
+        const res = await fetch(`${API_URL}/repositories`)
+        const data: Repository[] = await res.json()
+        setAnalyzedRepos(data)
+      }
     }
     fetchRepos()
-  }, [])
+  }, [session])
 
   const reviewError = () => {
     if (repoUrl === '') {
@@ -94,7 +103,7 @@ export default function Home() {
         <a
           className="flex items-center justify-center w-full text-md p-4 rounded-md hover:bg-zinc-700 "
           href={session ? '#' : '/login'}
-          title="Go to Login Page"
+          // title="Go to Login Page"
         >
           <div className="mr-2">
             {session?.user?.name && session?.user?.image ? (
@@ -171,7 +180,9 @@ export default function Home() {
 
       <div>
         <div className="mt-8 w-full">
-          <h4 className="text-2xl mb-4">Analyzed Repositories</h4>
+          <h4 className="text-2xl mb-4">
+            {session ? 'Our Repositories' : 'Public Analized Repositories'}
+          </h4>
           <ul className="list-disc list-inside pl-4">
             {analyzedRepos.map((repo, index) => (
               <li key={index}>
