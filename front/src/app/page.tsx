@@ -88,7 +88,7 @@ export default function Home() {
       <div
         onMouseEnter={toggleDropdown}
         onMouseLeave={toggleDropdown}
-        className="flex flex-col items-center cursor-pointer absolute top-6 right-8 w-44"
+        className="flex flex-col items-center cursor-pointer absolute top-6 right-8 w-32"
       >
         <a
           className="flex items-center justify-center w-full text-md p-4 rounded-md hover:bg-zinc-700 "
@@ -112,7 +112,7 @@ export default function Home() {
         </a>
         {isDropdownOpen && session && (
           <button
-            onClick={() => signOut({ callbackUrl: '/' })}
+            onClick={() => signOut({ redirect: false })}
             className="block text-sm bg-red-500 rounded-md hover:bg-red-400 text-center w-full p-2"
           >
             Cerrar sesión

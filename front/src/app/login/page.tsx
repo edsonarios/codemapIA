@@ -4,20 +4,22 @@ import { useState } from 'react'
 import Google from './icons/google'
 import Github from './icons/github'
 import { ring } from 'ldrs'
+import User from './icons/user'
+import Password from './icons/password'
+import { BuiltInProviderType } from 'next-auth/providers/index'
 ring.register()
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('user@mail.com')
+  const [password, setPassword] = useState('123')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const login = async (provider: string) => {
+  const login = async (provider: BuiltInProviderType) => {
     setLoading(true)
     let result
     if (provider === 'credentials') {
       result = await signIn(provider, {
-        redirect: false,
         email,
         password,
         callbackUrl: '/',
@@ -52,24 +54,34 @@ export default function Login() {
             {error && <p className="text-red-500">{error}</p>}
             <div>
               <label className="block text-sm font-medium ">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="text-black w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-                required
-              />
+              <div className="flex items-center h-10 rounded border-2 border-gray-600">
+                <div className="bg-slate-600 h-full flex items-center justify-center w-10">
+                  <User className="size-5 stroke-gray-400" />
+                </div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="text-black w-full h-full border border-gray-300 rounded-sm focus:outline-none focus:ring focus:border-blue-300 p-2"
+                  required
+                />
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium ">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="text-black w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-                required
-              />
+              <div className="flex items-center h-10 rounded border-2 border-gray-600">
+                <div className="bg-slate-600 h-full flex items-center justify-center w-10">
+                  <Password className="size-5 stroke-gray-400" />
+                </div>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="text-black w-full h-full border border-gray-300 rounded-sm focus:outline-none focus:ring focus:border-blue-300 p-2"
+                  required
+                />
+              </div>
             </div>
 
             <button
