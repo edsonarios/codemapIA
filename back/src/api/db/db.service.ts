@@ -6,18 +6,37 @@ import { f } from '../../common/nestConfig/logger'
 import { Datas } from './entities/datas.entity'
 import { formatRepositoryName } from '../../common/utils'
 import { UpdateDataDto } from '../data/dto/update-data.dto'
+import { Users } from './entities/users.entity'
+import { CreateUserDto } from '../users/dto/create-user.dto'
 
 @Injectable()
 export class DBService {
   private readonly logger = new Logger(DBService.name)
 
   constructor(
+    @InjectRepository(Users)
+    private readonly usersRepository: Repository<Users>,
+
     @InjectRepository(Repositories)
     private readonly repoRepository: Repository<Repositories>,
 
     @InjectRepository(Datas)
     private readonly datasRepository: Repository<Datas>,
   ) {}
+
+  async createUser(createUserDto: CreateUserDto) {
+    this.logger.log('createUser')
+    try {
+      const newUser = this.usersRepository.create({
+        ...createUserDto,
+      })
+      await this.usersRepository.save(newUser)
+      return newUser
+    } catch (error) {
+      this.logger.error(`createUser:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
 
   async getRepositories() {
     this.logger.log('getRepositories')
@@ -106,7 +125,7 @@ export class DBService {
     }
   }
 
-  async updateDatas(dataId, updateDataDto: UpdateDataDto) {
+  async updateDatas(dataId: string, updateDataDto: UpdateDataDto) {
     this.logger.log('updateDatas')
     try {
       return await this.datasRepository.update(dataId, updateDataDto)

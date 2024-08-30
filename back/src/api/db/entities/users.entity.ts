@@ -3,16 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm'
-import { Datas } from './datas.entity'
-import { Users } from './users.entity'
+import { Repositories } from './repositories.entity'
 
 @Entity()
-export class Repositories {
+export class Users {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -20,10 +18,19 @@ export class Repositories {
   name: string
 
   @Column('character varying', { nullable: true, default: '' })
-  url: string
+  email: string
 
   @Column('character varying', { nullable: true, default: '' })
-  description: string
+  password: string
+
+  @Column('character varying', { nullable: true, default: '' })
+  provider: string
+
+  @Column('character varying', { nullable: true, default: '' })
+  image: string
+
+  @Column('boolean', { default: true })
+  active: boolean
 
   @CreateDateColumn({
     type: 'timestamptz',
@@ -35,13 +42,7 @@ export class Repositories {
   })
   updatedAt: Date
 
-  @OneToOne(() => Datas, (data) => data.repository)
-  data: Datas
-
-  @ManyToOne(() => Users, {
-    cascade: true,
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Repositories, (repository) => repository.user)
   @JoinColumn()
-  user: Users
+  repository: Repositories
 }

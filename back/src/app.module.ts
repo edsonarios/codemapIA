@@ -5,6 +5,7 @@ import { RepositoriesModule } from './api/repositories/repositories.module'
 import { DbModule } from './api/db/db.module'
 import { DataModule } from './api/data/data.module'
 import { f } from './common/nestConfig/logger'
+import { UsersModule } from './api/users/users.module'
 
 const { STAGE } = process.env
 const logger = new Logger('AppModule')
@@ -43,6 +44,7 @@ const logger = new Logger('AppModule')
     DbModule,
     RepositoriesModule,
     DataModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
