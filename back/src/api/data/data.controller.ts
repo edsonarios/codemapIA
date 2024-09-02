@@ -21,9 +21,9 @@ export class DataController {
   constructor(private readonly nodesAndEdgesService: DataService) {}
 
   @Get()
-  findQuery(@Query('repository') repository: string) {
-    this.logger.log(`findQuery: ${repository}`)
-    return this.nodesAndEdgesService.findByQuery(repository)
+  findQuery(@Query('repository') repositoryId: string) {
+    this.logger.log(`findQuery: ${repositoryId}`)
+    return this.nodesAndEdgesService.findByRepositoryId(repositoryId)
   }
 
   // @Get(':id')

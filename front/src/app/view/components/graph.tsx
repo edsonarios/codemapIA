@@ -32,6 +32,8 @@ export default function GraphPage() {
   const [apiKey, setApiKey] = useState('')
   const [error, setError] = useState('')
 
+  const [errorData, setErrorData] = useState('')
+
   const handleApiKeySubmit = (event: any) => {
     event.preventDefault()
     if (apiKeyValue === '') {
@@ -52,11 +54,13 @@ export default function GraphPage() {
         const res = await fetch(
           `${API_URL}/data?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
         )
+        const response = await res.json()
         if (!res.ok) {
-          console.error('Error fetching datas:', res)
+          toast.error(response.message)
+          // Todo - Show a error message in the UI indicate that the data is not found
+          // setErrorData(response.message)
           return
         }
-        const response = await res.json()
         setParamRepoName(paramRepository)
         setDataId(response.id)
         setStoreNodesAndEdges(response.nodesAndEdges)

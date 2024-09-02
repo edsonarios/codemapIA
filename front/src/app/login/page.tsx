@@ -24,8 +24,8 @@ export default function Login() {
   const [repeatPassword, setRepeatPassword] = useState('')
   const [errorRepeat, setErrorRepeat] = useState('')
   // Login
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('user@mail.com')
+  const [password, setPassword] = useState('123')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 

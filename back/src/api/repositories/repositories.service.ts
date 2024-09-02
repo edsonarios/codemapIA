@@ -74,9 +74,9 @@ export class RepositoriesService {
     }
 
     try {
-      const repository = await this.dbService.findRepository(url)
+      const repository = await this.dbService.findRepository(url, userId)
       if (repository) {
-        return { url: repoName }
+        return { id: repository.id }
       } else {
         const downloadUrl = `${url}/archive/refs/heads/main.zip`
         const response = await axios.get(downloadUrl, {
@@ -105,7 +105,7 @@ export class RepositoriesService {
         fs.rmSync(path.resolve(cloneDir, `${repositoryName}-main`), {
           recursive: true,
         })
-        return { url: repoName }
+        return { id: newRepository.id }
       }
     } catch (error: any) {
       throw new InternalServerErrorException(error)

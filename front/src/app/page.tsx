@@ -10,6 +10,7 @@ import Profile from './profile'
 import UserLoged from './login/icons/userLoged'
 
 export interface Repository {
+  id: string
   name: string
   url: string
   description: string
@@ -79,9 +80,7 @@ export default function Home() {
       })
       const data = await res.json()
       if (res.ok) {
-        router.push(
-          `/view?${paramViewPageName}=${encodeURIComponent(data.url)}`,
-        )
+        router.push(`/view?${paramViewPageName}=${data.id}`)
       } else {
         setErrorRepoUrl(data.error || 'Error')
       }
@@ -191,7 +190,7 @@ export default function Home() {
             {analyzedRepos.map((repo, index) => (
               <li key={index}>
                 <a
-                  href={`/view?${paramViewPageName}=${getNameRepository(repo.url)}`}
+                  href={`/view?${paramViewPageName}=${repo.id}`}
                   className="text-[#5cc8f7] hover:underline"
                 >
                   {`${repo.name} - ${repo.url}`}

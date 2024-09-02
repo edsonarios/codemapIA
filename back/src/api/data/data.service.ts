@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable, Logger, NotFoundException } from '@nestjs/common'
 // import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
 import { UpdateDataDto } from './dto/update-data.dto'
 import { DBService } from '../db/db.service'
@@ -10,10 +10,12 @@ export class DataService {
   private readonly logger = new Logger(DataService.name)
   constructor(private readonly dbService: DBService) {}
 
-  async findByQuery(repository: string) {
+  async findByRepositoryId(repositoryId: string) {
     try {
-      const response = await this.dbService.getDatas(repository)
-      // this.logger.log(f(response))
+      const response = await this.dbService.getDatasByRepositoryId(repositoryId)
+      if (!response) {
+        throw new NotFoundException('Data not found')
+      }
       return response
     } catch (error) {
       this.logger.error(`getRepositories:_ ${f(error)}`)

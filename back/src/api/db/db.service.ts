@@ -100,11 +100,12 @@ export class DBService {
     }
   }
 
-  async findRepository(url: string) {
+  async findRepository(url: string, userId: string | null) {
     this.logger.log('findRepository')
+    console.log('userId', userId)
     try {
       return await this.repoRepository.findOne({
-        where: { url },
+        where: { url, user: userId ? { id: userId } : IsNull() },
       })
     } catch (error) {
       this.logger.error(`findRepository:_ ${f(error)}`)
@@ -162,12 +163,12 @@ export class DBService {
     }
   }
 
-  async getDatas(partialUrl: string) {
+  async getDatasByRepositoryId(repositoryId: string) {
     this.logger.log('getDatas')
     try {
       return await this.datasRepository.findOne({
         relations: ['repository'],
-        where: { repository: { url: `https://github.com/${partialUrl}` } },
+        where: { repository: { id: repositoryId } },
       })
     } catch (error) {
       this.logger.error(`getDatas:_ ${f(error)}`)
