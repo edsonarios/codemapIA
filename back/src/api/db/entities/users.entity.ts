@@ -32,6 +32,9 @@ export class Users {
   @Column('boolean', { default: true })
   active: boolean
 
+  @Column('int', { nullable: true, default: 5 })
+  allowedRepos: number
+
   @CreateDateColumn({
     type: 'timestamptz',
   })

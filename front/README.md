@@ -34,10 +34,10 @@ src/components/Navbar/Navbar.astro
 * Use DB for datas ✅
 * With dedicated back, now support astro project ✅
 * Login for users (Github, google, credentials) Oauth ✅
-* Restrict scanned repositoriesRe, limit 5 repositories by user
+* Restrict scanned repositoriesRe, limit 5 repositories by user ✅
 * If a repository does not belong to a user, it will be deleted at the end of the day
-* Animation panelInformation
 * Home Page, show analyzed repositories as cards
+* Animation panelInformation
 * Different colors by folders to nodes
 * Icons by folder
 * Show a error message in the UI indicate that the data is not found

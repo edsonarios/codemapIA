@@ -1,12 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
-// import extract from 'extract-zip' // work in prod
-import * as extract from 'extract-zip'
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common'
+import extract from 'extract-zip' // work in prod
+// import * as extract from 'extract-zip'
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
@@ -78,6 +74,18 @@ export class RepositoriesService {
       if (repository) {
         return { id: repository.id }
       } else {
+        //? Check if the user has reached the limit of repositories
+        if (userId) {
+          const user = await this.dbService.getUserById(userId)
+          const repositories =
+            await this.dbService.getRepositoriesByUserId(userId)
+          if (repositories.length >= user.allowedRepos) {
+            throw new UnauthorizedException(
+              'You have reached the limit of repositories',
+            )
+          }
+        }
+
         const downloadUrl = `${url}/archive/refs/heads/main.zip`
         const response = await axios.get(downloadUrl, {
           responseType: 'arraybuffer',
@@ -108,7 +116,7 @@ export class RepositoriesService {
         return { id: newRepository.id }
       }
     } catch (error: any) {
-      throw new InternalServerErrorException(error)
+      throw error
     }
   }
 

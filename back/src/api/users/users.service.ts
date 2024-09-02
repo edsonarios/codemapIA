@@ -43,8 +43,13 @@ export class UsersService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`
+  findOne(id: string) {
+    this.logger.log('findOne')
+    try {
+      return this.dbService.getUserById(id.toString())
+    } catch (error) {
+      throw error
+    }
   }
 
   // findAll() {

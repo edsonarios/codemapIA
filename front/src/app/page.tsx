@@ -2,21 +2,17 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { paramViewPageName } from '@/components/utils/constants'
-import { getNameRepository } from '@/components/utils/utils'
 import { API_URL } from './view/utils/utils'
 import Image from 'next/image'
 import { signOut, useSession } from 'next-auth/react'
 import Profile from './profile'
 import UserLoged from './login/icons/userLoged'
+import { Repository } from './view/interface/repository.interface'
+import { User } from './view/interface/user.interface'
 
-export interface Repository {
-  id: string
-  name: string
-  url: string
-  description: string
-}
 export default function Home() {
   const { data: session, status } = useSession()
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState(
     'https://github.com/edsonarios/play-factory-web',
@@ -31,6 +27,10 @@ export default function Home() {
       // console.log('session', session)
       if (session?.user?.email) {
         const userId = (session.user as any).id || ''
+        const userResponse = await fetch(`${API_URL}/users/${userId}`)
+        const user = (await userResponse.json()) as User
+        setCurrentUser(user)
+
         const res = await fetch(`${API_URL}/repositories/${userId}`)
         const data: Repository[] = await res.json()
         setAnalyzedRepos(data)
@@ -171,7 +171,11 @@ export default function Home() {
         </div>
         <button
           type="submit"
-          className="ml-4 p-2 bg-blue-500 hover:bg-blue-400 text-white rounded w-24 flex items-center justify-center"
+          className={`ml-4 p-2 text-white rounded w-24 flex items-center justify-center ${currentUser && analyzedRepos.length >= currentUser.allowedRepos ? 'bg-gray-500 hover:bg-gray-400' : 'bg-blue-500 hover:bg-blue-400'}`}
+          disabled={
+            !!(currentUser && analyzedRepos.length >= currentUser.allowedRepos)
+          }
+          title={`${currentUser && analyzedRepos.length >= currentUser.allowedRepos ? 'You have reached the limit of repositories' : 'Analyze repository'}`}
         >
           {loading ? (
             <div id="spinner" className="loader ml-2"></div>
@@ -185,6 +189,11 @@ export default function Home() {
         <div className="mt-8 w-full">
           <h4 className="text-2xl mb-4">
             {session ? 'Our Repositories' : 'Public Analized Repositories'}
+            <span className="text-sm text-gray-500">
+              {session && currentUser
+                ? ` (Max repositories allowed: ${currentUser.allowedRepos})`
+                : ''}
+            </span>
           </h4>
           <ul className="list-disc list-inside pl-4">
             {analyzedRepos.map((repo, index) => (

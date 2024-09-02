@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common'
 import { RepositoriesService } from './repositories.service'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
+import { f } from '../../common/nestConfig/logger'
 // import { UpdateRepositoryDto } from './dto/update-repository.dto'
 
 @Controller('repositories')
@@ -20,18 +21,19 @@ export class RepositoriesController {
 
   @Post()
   create(@Body() createRepositoryDto: CreateRepositoryDto) {
-    this.logger.log(`create`)
+    this.logger.log(`POST create:_ ${f(createRepositoryDto)}`)
     return this.repositoriesService.create(createRepositoryDto)
   }
 
   @Get()
   findAll() {
-    this.logger.log(`findAll`)
+    this.logger.log(`GET findAll`)
     return this.repositoriesService.findAll()
   }
 
   @Get(':id')
   findById(@Param('id') id: string) {
+    this.logger.log(`GET findById:_ ${f(id)}`)
     return this.repositoriesService.findByUserId(id)
   }
 

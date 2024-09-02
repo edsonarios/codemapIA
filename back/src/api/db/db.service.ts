@@ -63,6 +63,18 @@ export class DBService {
     }
   }
 
+  async getUserById(id: string) {
+    this.logger.log('getUserById')
+    try {
+      return await this.usersRepository.findOne({
+        where: { id },
+      })
+    } catch (error) {
+      this.logger.error(`getUserById:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async getRepositories() {
     this.logger.log('getRepositories')
     try {
