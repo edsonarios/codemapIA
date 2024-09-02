@@ -1,9 +1,8 @@
 'use client'
 import { signIn } from 'next-auth/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Google from './icons/google'
 import Github from './icons/github'
-import { ring } from 'ldrs'
 import User from './icons/user'
 import Password from './icons/password'
 import { BuiltInProviderType } from 'next-auth/providers/index'
@@ -12,7 +11,6 @@ import BackHome from '@/components/backHome'
 import { API_URL } from '../view/utils/utils'
 import Email from './icons/email'
 import { Toaster, toast } from 'sonner'
-ring.register()
 
 export default function Login() {
   const router = useRouter()
@@ -28,6 +26,14 @@ export default function Login() {
   const [password, setPassword] = useState('123')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    async function getLoader() {
+      const { ring } = await import('ldrs')
+      ring.register()
+    }
+    getLoader()
+  }, [])
 
   const login = async (provider: BuiltInProviderType) => {
     setLoading(true)
@@ -112,7 +118,7 @@ export default function Login() {
     <div className="relative flex justify-center h-screen">
       <BackHome />
       <div
-        className={`${register ? 'h-[750px]' : 'h-[520px]'} relative w-[450px] rounded flex items-center justify-center overflow-hidden shadow-md shadow-slate-700`}
+        className={`${register ? 'h-[750px]' : 'h-[560px]'} relative w-[450px] rounded flex items-center justify-center overflow-hidden shadow-md shadow-slate-700`}
         style={{
           marginTop: 'calc(40vh - 20%)',
         }}
@@ -212,7 +218,7 @@ export default function Login() {
                 {errorRepeat ? (
                   <p className="text-red-500 text-xs mt-1">{errorRepeat}</p>
                 ) : (
-                  <p className="text-xs text-transparent mt-1">_</p>
+                  <p className="text-xs text-transparent mt-1">some</p>
                 )}
               </div>
 
