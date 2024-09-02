@@ -32,7 +32,7 @@ export class RepositoriesController {
 
   @Get(':id')
   findById(@Param('id') id: string) {
-    return this.repositoriesService.findById(id)
+    return this.repositoriesService.findByUserId(id)
   }
 
   // @Patch(':id')

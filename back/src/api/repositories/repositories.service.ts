@@ -39,10 +39,10 @@ export class RepositoriesService {
     }
   }
 
-  async findById(id: string) {
+  async findByUserId(id: string) {
     this.logger.log('findById')
     try {
-      return await this.dbService.getRepositoriesById(id)
+      return await this.dbService.getRepositoriesByUserId(id)
     } catch (error) {
       throw error
     }
@@ -50,7 +50,8 @@ export class RepositoriesService {
 
   async create(createRepositoryDto: CreateRepositoryDto) {
     this.logger.log('create')
-    const { url } = createRepositoryDto
+    const { url, userId } = createRepositoryDto
+    console.log('userId', userId)
     const repoName = url.replace('https://github.com/', '')
     const nameUser = repoName.split('/')[0]
     const repositoryName = repoName.split('/')[1]
@@ -91,6 +92,7 @@ export class RepositoriesService {
         const newRepository = await this.dbService.createRepository(
           repositoryName,
           url,
+          userId,
         )
         await this.dbService.createDataByRepository(
           newRepository,

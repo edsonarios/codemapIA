@@ -18,7 +18,7 @@ export default function Home() {
   const { data: session, status } = useSession()
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState(
-    'https://github.com/midudev/hackaton-vercel-2024',
+    'https://github.com/edsonarios/play-factory-web',
   )
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
@@ -66,12 +66,16 @@ export default function Home() {
     setErrorRepoUrl('')
     setLoading(true)
     try {
+      let userId: string | null = null
+      if (session) {
+        userId = (session?.user as any).id || ''
+      }
       const res = await fetch(`${API_URL}/repositories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: repoUrl }),
+        body: JSON.stringify({ url: repoUrl, userId }),
       })
       const data = await res.json()
       if (res.ok) {

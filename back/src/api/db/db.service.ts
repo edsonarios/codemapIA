@@ -83,7 +83,7 @@ export class DBService {
     }
   }
 
-  async getRepositoriesById(id: string) {
+  async getRepositoriesByUserId(id: string) {
     this.logger.log('getRepositoriesById')
     try {
       return await this.repoRepository.find({
@@ -112,12 +112,13 @@ export class DBService {
     }
   }
 
-  async createRepository(name: string, url: string) {
+  async createRepository(name: string, url: string, userId: string | null) {
     this.logger.log('createRepository')
     try {
       const newRepository = this.repoRepository.create({
         name: formatRepositoryName(name),
         url,
+        user: userId ? { id: userId } : null,
       })
       await this.repoRepository.save(newRepository)
       return newRepository
