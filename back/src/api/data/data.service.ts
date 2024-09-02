@@ -17,6 +17,7 @@ export class DataService {
       return response
     } catch (error) {
       this.logger.error(`getRepositories:_ ${f(error)}`)
+      throw error
     }
   }
 
@@ -38,6 +39,7 @@ export class DataService {
       return { response: 'Saved successfully' }
     } catch (error) {
       this.logger.error(`update:_ ${f(error)}`)
+      throw error
     }
   }
 
@@ -50,6 +52,7 @@ export class DataService {
       return { response: 'Saved successfully' }
     } catch (error) {
       this.logger.error(`update:_ ${f(error)}`)
+      throw error
     }
   }
 

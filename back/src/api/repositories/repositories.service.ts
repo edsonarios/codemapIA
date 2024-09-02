@@ -2,7 +2,11 @@ import * as path from 'path'
 import * as fs from 'fs'
 // import extract from 'extract-zip' // work in prod
 import * as extract from 'extract-zip'
-import { Injectable, Logger } from '@nestjs/common'
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
@@ -63,42 +67,46 @@ export class RepositoriesService {
       }
     } catch (error: any) {
       return {
-        error: 'Error creating directory',
+        error: 'Error cloning repository',
         message: error.message,
       }
     }
 
-    const repository = await this.dbService.findRepository(url)
-    if (repository) {
-      return { url: repoName }
-    } else {
-      const downloadUrl = `${url}/archive/refs/heads/main.zip`
-      const response = await axios.get(downloadUrl, {
-        responseType: 'arraybuffer',
-      })
-      fs.writeFileSync(zipPath, response.data)
-      await extract(zipPath, { dir: cloneDir })
-      fs.unlinkSync(zipPath)
+    try {
+      const repository = await this.dbService.findRepository(url)
+      if (repository) {
+        return { url: repoName }
+      } else {
+        const downloadUrl = `${url}/archive/refs/heads/main.zip`
+        const response = await axios.get(downloadUrl, {
+          responseType: 'arraybuffer',
+        })
+        fs.writeFileSync(zipPath, response.data)
+        await extract(zipPath, { dir: cloneDir })
+        fs.unlinkSync(zipPath)
 
-      const { structure, contentFiles, nodesAndEdges } =
-        await processRepository(`${repoName}-main`)
+        const { structure, contentFiles, nodesAndEdges } =
+          await processRepository(`${repoName}-main`)
 
-      const newRepository = await this.dbService.createRepository(
-        repositoryName,
-        url,
-      )
-      await this.dbService.createDataByRepository(
-        newRepository,
-        structure,
-        contentFiles,
-        nodesAndEdges,
-      )
+        const newRepository = await this.dbService.createRepository(
+          repositoryName,
+          url,
+        )
+        await this.dbService.createDataByRepository(
+          newRepository,
+          structure,
+          contentFiles,
+          nodesAndEdges,
+        )
 
-      // fs.rmdirSync(path.resolve(cloneDir, `${repositoryName}-main`), {
-      fs.rmSync(path.resolve(cloneDir, `${repositoryName}-main`), {
-        recursive: true,
-      })
-      return { url: repoName }
+        // fs.rmdirSync(path.resolve(cloneDir, `${repositoryName}-main`), {
+        fs.rmSync(path.resolve(cloneDir, `${repositoryName}-main`), {
+          recursive: true,
+        })
+        return { url: repoName }
+      }
+    } catch (error: any) {
+      throw new InternalServerErrorException(error)
     }
   }
 

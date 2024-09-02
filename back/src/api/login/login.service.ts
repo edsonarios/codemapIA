@@ -27,8 +27,8 @@ export class LoginService {
         }
         return user
       } else {
-        this.logger.error('email not found')
-        throw new BadRequestException('Email not found')
+        this.logger.error('email not registered')
+        throw new BadRequestException('Email not registered')
       }
     } catch (error) {
       this.logger.error(`login:_ ${f(error)}`)
