@@ -9,6 +9,7 @@ import Profile from './profile'
 import UserLoged from './login/icons/userLoged'
 import { Repository } from './view/interface/repository.interface'
 import { User } from './view/interface/user.interface'
+import RepositoryCard from './components/repositoryCard'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -185,30 +186,24 @@ export default function Home() {
         </button>
       </form>
 
-      <div>
-        <div className="mt-8 w-full">
-          <h4 className="text-2xl mb-4">
-            {session ? 'Our Repositories' : 'Public Analized Repositories'}
-            <span className="text-sm text-gray-500">
-              {session && currentUser
-                ? ` (Max repositories allowed: ${currentUser.allowedRepos})`
-                : ''}
-            </span>
-          </h4>
-          <ul className="list-disc list-inside pl-4">
-            {analyzedRepos.map((repo, index) => (
-              <li key={index}>
-                <a
-                  href={`/view?${paramViewPageName}=${repo.id}`}
-                  className="text-[#5cc8f7] hover:underline"
-                >
-                  {`${repo.name} - ${repo.url}`}
-                </a>
-              </li>
-            ))}
-          </ul>
+      <div className="w-full mt-8">
+        <h4 className="text-center text-2xl mb-4">
+          {session ? 'Our Repositories' : 'Public Analized Repositories'}
+          <span className="text-sm text-gray-500">
+            {session && currentUser
+              ? ` (Max repositories allowed: ${currentUser.allowedRepos})`
+              : ''}
+          </span>
+        </h4>
+        <div className="w-full flex flex-wrap justify-start">
+          {analyzedRepos.map((repo, index) => (
+            <div key={index} className="p-2">
+              <RepositoryCard repo={repo} />
+            </div>
+          ))}
         </div>
       </div>
+
       <footer className="absolute text-white text-center w-full bottom-0 p-6">
         <p className="text-center text-sm text-gray-100 mt-4">
           &copy; 2024 CodeMap IA - Edson Añawaya Rios.
