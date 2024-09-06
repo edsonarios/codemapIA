@@ -10,6 +10,8 @@ import UserLoged from './login/icons/userLoged'
 import { Repository } from './view/interface/repository.interface'
 import { User } from './view/interface/user.interface'
 import RepositoryCard from './components/repositoryCard'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -94,6 +96,13 @@ export default function Home() {
     setIsDropdownOpen(!isDropdownOpen)
   }
 
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: true,
+    })
+  }, [])
+
   if (status === 'loading') return <div>Loading...</div>
   return (
     <main className="relative flex min-h-screen flex-col items-center p-24 h-full">
@@ -135,14 +144,17 @@ export default function Home() {
       </div>
 
       <div className="text-center text-balance">
-        <h1 className="text-6xl mt-4">CodeMap AI</h1>
-        <h2 className="text-2xl mt-4 text-[#5cc8f7]">
+        <h1 className="text-6xl mt-4" data-aos="fade-down">
+          CodeMap AI
+        </h1>
+        <h2 className="text-2xl mt-4 text-[#5cc8f7]" data-aos="fade-down">
           Intelligent mapping of code structure with detailed AI explanations
         </h2>
       </div>
       <form
         onSubmit={handleSubmit}
         className="flex flex-row p-2 items-center w-full justify-center mt-6"
+        data-aos="fade-in"
       >
         <h4>Url GitHub Repository</h4>
         <div className="relative w-[50%] ml-4 flex flex-col items-start">
@@ -182,7 +194,7 @@ export default function Home() {
       </form>
 
       <div className="w-full mt-8">
-        <h4 className="text-center text-2xl mb-4">
+        <h4 className="text-center text-2xl mb-4" data-aos="fade-zoom-in">
           {session ? 'Our Repositories' : 'Public Analized Repositories'}
           <span className="text-sm text-gray-500">
             {session && currentUser
@@ -192,7 +204,7 @@ export default function Home() {
         </h4>
         <div className="w-full flex flex-wrap justify-start">
           {analyzedRepos.map((repo, index) => (
-            <div key={index} className="p-2">
+            <div key={index} className="p-2" data-aos="fade-left">
               <RepositoryCard repo={repo} />
             </div>
           ))}
