@@ -35,8 +35,8 @@ src/components/Navbar/Navbar.astro
 * With dedicated back, now support astro project ✅
 * Login for users (Github, google, credentials) Oauth ✅
 * Restrict scanned repositoriesRe, limit 5 repositories by user ✅
-* If a repository does not belong to a user, it will be deleted at the end of the day
-* Home Page, show analyzed repositories as cards
+* If a repository does not belong to a user, it will be deleted at the end of the day (manually)
+* Home Page, show analyzed repositories as cards ✅
 * Animation panelInformation
 * Different colors by folders to nodes
 * Icons by folder

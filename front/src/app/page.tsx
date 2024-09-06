@@ -15,9 +15,7 @@ export default function Home() {
   const { data: session, status } = useSession()
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
-  const [repoUrl, setRepoUrl] = useState(
-    'https://github.com/edsonarios/play-factory-web',
-  )
+  const [repoUrl, setRepoUrl] = useState('')
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -141,13 +139,10 @@ export default function Home() {
         <h2 className="text-2xl mt-4 text-[#5cc8f7]">
           Intelligent mapping of code structure with detailed AI explanations
         </h2>
-        <h3 className="mt-4 text-xl text-gray-500">
-          Example: https://github.com/edsonarios/play-factory-dev
-        </h3>
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-row p-2 items-center w-full justify-center"
+        className="flex flex-row p-2 items-center w-full justify-center mt-6"
       >
         <h4>Url GitHub Repository</h4>
         <div className="relative w-[50%] ml-4 flex flex-col items-start">

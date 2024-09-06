@@ -22,8 +22,8 @@ export default function Login() {
   const [repeatPassword, setRepeatPassword] = useState('')
   const [errorRepeat, setErrorRepeat] = useState('')
   // Login
-  const [email, setEmail] = useState('user@mail.com')
-  const [password, setPassword] = useState('123')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -133,7 +133,7 @@ export default function Login() {
                 !register ? 'bg-blue-600' : 'bg-slate-600 hover:bg-blue-500'
               } rounded-l-lg transition-colors duration-300`}
             >
-              Login
+              Sign in
             </button>
             <button
               onClick={() => setRegister(true)}
@@ -154,7 +154,7 @@ export default function Login() {
               }}
             >
               <div>
-                <label className="block text-sm font-medium ">Username</label>
+                <label className="block text-sm font-medium ">User name</label>
                 <div className="flex items-center h-10 rounded border-2 border-gray-600">
                   <div className="bg-slate-600 h-full flex items-center justify-center w-10">
                     <User className="size-5 stroke-gray-400" />

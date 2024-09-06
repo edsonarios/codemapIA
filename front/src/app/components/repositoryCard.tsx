@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 
 export default function RepositoryCard({ repo }: { repo: Repository }) {
   return (
-    <section className="relative w-[350px] min-h-52 h-52 border-2 border-gray-500 rounded-md p-4 space-y-2 hover:bg-neutral-600/20 transition-all ease-in-out duration-500 hover:h-auto">
+    <section className="relative w-[350px] min-h-52 h-52 border-2 border-gray-500 rounded-lg p-4 space-y-2 hover:bg-neutral-600/20 transition-all ease-in-out duration-100 hover:h-auto">
       <a
         className="text-[#5cc8f7] group flex flex-row justify-center items-center hover:underline"
         href={`/view?${paramViewPageName}=${repo.id}`}
