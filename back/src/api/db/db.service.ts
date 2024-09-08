@@ -146,6 +146,19 @@ export class DBService {
     }
   }
 
+  async updateRepository(
+    repositoryId: string,
+    updateRepositoryDto: Repositories,
+  ) {
+    this.logger.log('updateRepository')
+    try {
+      return await this.repoRepository.update(repositoryId, updateRepositoryDto)
+    } catch (error) {
+      this.logger.error(`updateRepository:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async createDataByRepository(
     repository: Repositories,
     structure: object,

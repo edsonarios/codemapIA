@@ -12,6 +12,7 @@ import { User } from './view/interface/user.interface'
 import RepositoryCard from './components/repositoryCard'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import ModalOptionsRepository from './components/modalOptionsRepository'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -216,6 +217,7 @@ export default function Home() {
           &copy; 2024 CodeMap IA - Edson Añawaya Rios.
         </p>
       </footer>
+      <ModalOptionsRepository />
     </main>
   )
 }

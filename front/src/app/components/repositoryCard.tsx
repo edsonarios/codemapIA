@@ -3,10 +3,27 @@ import { Repository } from '../view/interface/repository.interface'
 import ArrowUpRight from './icons/arrowUpRight'
 import ArrowRight from './icons/arrowRight'
 import { DateTime } from 'luxon'
+import Options from './icons/options'
+import {
+  IRepositoryStore,
+  useRepositoryStore,
+} from '@/components/store/repositoryStore'
 
 export default function RepositoryCard({ repo }: { repo: Repository }) {
+  const { setIsShowModalRepository, setRepositoryData } =
+    useRepositoryStore<IRepositoryStore>((state) => state)
+
   return (
     <section className="relative w-[350px] min-h-52 h-52 border-2 border-gray-500 rounded-lg p-4 space-y-2 hover:bg-neutral-600/20 transition-all ease-in-out duration-100 hover:h-auto group">
+      <button
+        className="absolute flex justify-center items-center rounded-md top-0 right-0 hover:bg-neutral-100/20 p-1"
+        onClick={() => {
+          setIsShowModalRepository(true)
+          setRepositoryData(repo)
+        }}
+      >
+        <Options className="size-5 hover:rotate-45 transition-all duration-200 hover:stroke-2" />
+      </button>
       <a
         className="text-[#5cc8f7] flex flex-row justify-center items-center hover:underline"
         href={`/view?${paramViewPageName}=${repo.id}`}

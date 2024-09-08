@@ -1,4 +1,5 @@
 import { NodesAndEdges } from '@/app/view/interface/nodesAndEdges.interface'
+import { Repository } from '@/app/view/interface/repository.interface'
 import { type StateCreator, create } from 'zustand'
 
 export interface IRepositoryStore {
@@ -22,6 +23,12 @@ export interface IRepositoryStore {
 
   isDisableButton: boolean
   setIsDisableButton: (isDisableButton: boolean) => void
+
+  isShowModalRepository: boolean
+  setIsShowModalRepository: (isShowModalRepository: boolean) => void
+
+  repositoryData: Repository | null
+  setRepositoryData: (repositoryData: Repository) => void
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   structure: {},
@@ -45,6 +52,13 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
 
   isDisableButton: true,
   setIsDisableButton: (isDisableButton) => set({ isDisableButton }),
+
+  isShowModalRepository: false,
+  setIsShowModalRepository: (isShowModalRepository) =>
+    set({ isShowModalRepository }),
+
+  repositoryData: null,
+  setRepositoryData: (repositoryData) => set({ repositoryData }),
 })
 
 export const useRepositoryStore = create<IRepositoryStore>()(repositoryStore)

@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  // Patch,
+  Patch,
   Param,
   // Delete,
   // HttpCode,
@@ -12,7 +12,7 @@ import {
 import { RepositoriesService } from './repositories.service'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 import { f } from '../../common/nestConfig/logger'
-// import { UpdateRepositoryDto } from './dto/update-repository.dto'
+import { Repositories } from '../db/entities/repositories.entity'
 
 @Controller('repositories')
 export class RepositoriesController {
@@ -37,13 +37,10 @@ export class RepositoriesController {
     return this.repositoriesService.findByUserId(id)
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateRepositoryDto: UpdateRepositoryDto,
-  // ) {
-  //   return this.repositoriesService.update(+id, updateRepositoryDto)
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateRepositoryDto: Repositories) {
+    return this.repositoriesService.update(id, updateRepositoryDto)
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

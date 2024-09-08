@@ -2,7 +2,12 @@ import * as path from 'path'
 import * as fs from 'fs'
 // import extract from 'extract-zip' // work in prod
 import * as extract from 'extract-zip'
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common'
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
@@ -10,6 +15,7 @@ import axios from 'axios'
 import { processRepository } from './processRepository'
 import { f } from '../../common/nestConfig/logger'
 import { getDescriptionByIA } from './ai'
+import { Repositories } from '../db/entities/repositories.entity'
 
 @Injectable()
 export class RepositoriesService {
@@ -131,9 +137,21 @@ export class RepositoriesService {
     return `This action returns a #${id} repository`
   }
 
-  // update(id: number, updateRepositoryDto: UpdateRepositoryDto) {
-  //   return `This action updates a #${id} repository`
-  // }
+  async update(id: string, updateRepositoryDto: Repositories) {
+    this.logger.log(`update:_ ${f(updateRepositoryDto)}`)
+    try {
+      const response = await this.dbService.updateRepository(
+        id,
+        updateRepositoryDto,
+      )
+      if (response.affected === 0) {
+        throw new InternalServerErrorException('Error updating the repository')
+      }
+      return { message: 'Repository updated successfully' }
+    } catch (error) {
+      throw new InternalServerErrorException('Error updating the repository')
+    }
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} repository`
