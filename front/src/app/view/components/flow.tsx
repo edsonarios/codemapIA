@@ -110,7 +110,10 @@ export function Flow({
   }, [nodes, edges])
 
   return (
-    <div className="text-black w-[90%] h-[800px] flex justify-center flex-col items-center border-2 rounded-md">
+    <div
+      className="text-black w-[90%] h-[800px] flex justify-center flex-col items-center border-2 rounded-md"
+      data-aos="zoom-in"
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}

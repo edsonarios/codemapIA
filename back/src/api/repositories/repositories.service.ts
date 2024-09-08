@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import extract from 'extract-zip' // work in prod
-// import * as extract from 'extract-zip'
+// import extract from 'extract-zip' // work in prod
+import * as extract from 'extract-zip'
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
 import { DBService } from '../db/db.service'
@@ -9,6 +9,7 @@ import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
 import { f } from '../../common/nestConfig/logger'
+import { getDescriptionByIA } from './ai'
 
 @Injectable()
 export class RepositoriesService {
@@ -47,7 +48,6 @@ export class RepositoriesService {
   async create(createRepositoryDto: CreateRepositoryDto) {
     this.logger.log('create')
     const { url, userId } = createRepositoryDto
-    console.log('userId', userId)
     const repoName = url.replace('https://github.com/', '')
     const nameUser = repoName.split('/')[0]
     const repositoryName = repoName.split('/')[1]
@@ -97,9 +97,16 @@ export class RepositoriesService {
         const { structure, contentFiles, nodesAndEdges } =
           await processRepository(`${repoName}-main`)
 
+        const description = await getDescriptionByIA(
+          url,
+          structure,
+          contentFiles,
+        )
+        console.log('description', description)
         const newRepository = await this.dbService.createRepository(
           repositoryName,
           url,
+          description,
           userId,
         )
         await this.dbService.createDataByRepository(

@@ -193,7 +193,7 @@ export default function Home() {
         </button>
       </form>
 
-      <div className="w-full mt-8">
+      <div className="w-full mt-8 mb-8">
         <h4 className="text-center text-2xl mb-4" data-aos="fade-zoom-in">
           {session ? 'Our Repositories' : 'Public Analized Repositories'}
           <span className="text-sm text-gray-500">
@@ -212,7 +212,7 @@ export default function Home() {
       </div>
 
       <footer className="absolute text-white text-center w-full bottom-0 p-6">
-        <p className="text-center text-sm text-gray-100 mt-4">
+        <p className="text-center text-sm text-gray-100">
           &copy; 2024 CodeMap IA - Edson Añawaya Rios.
         </p>
       </footer>

@@ -114,7 +114,6 @@ export class DBService {
 
   async findRepository(url: string, userId: string | null) {
     this.logger.log('findRepository')
-    console.log('userId', userId)
     try {
       return await this.repoRepository.findOne({
         where: { url, user: userId ? { id: userId } : IsNull() },
@@ -125,12 +124,18 @@ export class DBService {
     }
   }
 
-  async createRepository(name: string, url: string, userId: string | null) {
+  async createRepository(
+    name: string,
+    url: string,
+    description: string,
+    userId: string | null,
+  ) {
     this.logger.log('createRepository')
     try {
       const newRepository = this.repoRepository.create({
         name: formatRepositoryName(name),
         url,
+        description,
         user: userId ? { id: userId } : null,
       })
       await this.repoRepository.save(newRepository)
