@@ -11,6 +11,8 @@ import { Flow } from './flow'
 import { Toaster, toast } from 'sonner'
 import { API_URL } from '../utils/utils'
 import BackHome from '@/components/backHome'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 export default function GraphPage() {
   const searchParams = useSearchParams()
@@ -76,6 +78,10 @@ export default function GraphPage() {
     if (storedApiKey) {
       setApiKey(storedApiKey)
     }
+    AOS.init({
+      duration: 1000,
+      once: true,
+    })
   }, [])
 
   const saveNodesAndEdges = async () => {
@@ -179,11 +185,16 @@ export default function GraphPage() {
         </div>
       ) : null}
 
-      <h1 className="text-4xl mt-4">CodeMap AI</h1>
-      <h2 className="text-center text-xl mt-2 text-balance text-[#5cc8f7]">
+      <h1 className="text-4xl mt-4" data-aos="fade-down">
+        CodeMap AI
+      </h1>
+      <h2
+        className="text-center text-xl mt-2 text-balance text-[#5cc8f7]"
+        data-aos="fade-down"
+      >
         Intelligent mapping of code structure with detailed AI explanations
       </h2>
-      <h3 className="text-gray-400 text-sm text-balance">
+      <h3 className="text-gray-400 text-sm text-balance" data-aos="fade-down">
         Click on a node to see more information
       </h3>
       {storeNodesAndEdges.map((nodeAndEdge, index) => (

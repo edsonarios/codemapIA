@@ -11,6 +11,8 @@ import BackHome from '@/components/backHome'
 import { API_URL } from '../view/utils/utils'
 import Email from './icons/email'
 import { Toaster, toast } from 'sonner'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 export default function Login() {
   const router = useRouter()
@@ -33,6 +35,10 @@ export default function Login() {
       ring.register()
     }
     getLoader()
+    AOS.init({
+      duration: 1000,
+      once: true,
+    })
   }, [])
 
   const login = async (provider: BuiltInProviderType) => {
@@ -115,7 +121,7 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex justify-center h-screen">
+    <div className="relative flex justify-center h-screen" data-aos="fade-up">
       <BackHome />
       <div
         className={`${register ? 'h-[750px]' : 'h-[560px]'} relative w-[450px] rounded flex items-center justify-center overflow-hidden shadow-md shadow-slate-700`}

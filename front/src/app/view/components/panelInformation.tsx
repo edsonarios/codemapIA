@@ -145,12 +145,13 @@ Este es un ejemplo de output que quiero,
     <div
       id="info-panel"
       className="absolute right-0 top-0 h-full w-1/3 bg-[#353847] p-4 border-l-2 z-10"
+      data-aos="fade-left"
     >
       <div className="relative w-full h-full">
         <div className="sticky right-0 top-0">
           <div className="flex flex-row items-center align-middle">
             <button
-              className="transition-transform duration-300 hover:bg-gray-300 hover:-translate-y-[1px] hover:translate-x-[1px] hidden md:block rounded-md p-1"
+              className="transition-transform duration-300 hover:bg-gray-500 hover:-translate-y-[1px] hover:translate-x-[1px] hidden md:block rounded-md p-1"
               onClick={() => {
                 setDetailByIA('')
                 setKeyInfoPanel(null)
