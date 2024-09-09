@@ -153,7 +153,16 @@ export class RepositoriesService {
     }
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} repository`
-  // }
+  async remove(id: string) {
+    this.logger.log(`remove:_ ${f(id)}`)
+    try {
+      const response = await this.dbService.removeRepository(id)
+      if (response.affected === 0) {
+        throw new InternalServerErrorException('Error removing the repository')
+      }
+      return { message: 'Repository removed successfully' }
+    } catch (error) {
+      throw new InternalServerErrorException('Error removing the repository')
+    }
+  }
 }

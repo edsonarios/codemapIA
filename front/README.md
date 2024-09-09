@@ -38,6 +38,7 @@ src/components/Navbar/Navbar.astro
 * If a repository does not belong to a user, it will be deleted at the end of the day (manually)
 * Home Page, show analyzed repositories as cards ✅
 * Animation panelInformation ✅
+* Options to update repository ✅
 * Different colors by folders to nodes
 * Icons by folder
 * Show a error message in the UI indicate that the data is not found

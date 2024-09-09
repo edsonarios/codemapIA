@@ -5,8 +5,7 @@ import {
   Body,
   Patch,
   Param,
-  // Delete,
-  // HttpCode,
+  Delete,
   Logger,
 } from '@nestjs/common'
 import { RepositoriesService } from './repositories.service'
@@ -42,8 +41,8 @@ export class RepositoriesController {
     return this.repositoriesService.update(id, updateRepositoryDto)
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.repositoriesService.remove(+id)
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.repositoriesService.remove(id)
+  }
 }

@@ -159,6 +159,16 @@ export class DBService {
     }
   }
 
+  async removeRepository(repositoryId: string) {
+    this.logger.log('removeRepository')
+    try {
+      return await this.repoRepository.delete(repositoryId)
+    } catch (error) {
+      this.logger.error(`removeRepository:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async createDataByRepository(
     repository: Repositories,
     structure: object,

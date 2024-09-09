@@ -13,11 +13,16 @@ import RepositoryCard from './components/repositoryCard'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import ModalOptionsRepository from './components/modalOptionsRepository'
+import {
+  IRepositoryStore,
+  useRepositoryStore,
+} from '@/components/store/repositoryStore'
 
 export default function Home() {
+  const { analyzedRepos, setAnalyzedRepos } =
+    useRepositoryStore<IRepositoryStore>((state) => state)
   const { data: session, status } = useSession()
   const [currentUser, setCurrentUser] = useState<User | null>(null)
-  const [analyzedRepos, setAnalyzedRepos] = useState<Repository[]>([])
   const [repoUrl, setRepoUrl] = useState('')
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
@@ -206,7 +211,7 @@ export default function Home() {
         <div className="w-full flex flex-wrap justify-start">
           {analyzedRepos.map((repo, index) => (
             <div key={index} className="p-2" data-aos="fade-left">
-              <RepositoryCard repo={repo} />
+              <RepositoryCard repo={repo} session={session} />
             </div>
           ))}
         </div>

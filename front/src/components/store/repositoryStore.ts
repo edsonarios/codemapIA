@@ -3,6 +3,9 @@ import { Repository } from '@/app/view/interface/repository.interface'
 import { type StateCreator, create } from 'zustand'
 
 export interface IRepositoryStore {
+  analyzedRepos: Repository[]
+  setAnalyzedRepos: (analyzedRepos: Repository[]) => void
+
   structure: Record<string, string[]>
   setStructure: (structure: Record<string, string[]>) => void
 
@@ -27,10 +30,21 @@ export interface IRepositoryStore {
   isShowModalRepository: boolean
   setIsShowModalRepository: (isShowModalRepository: boolean) => void
 
+  isShowConfirmationModal: boolean
+  setIsShowConfirmationModal: (isShowConfirmationModal: boolean) => void
+
+  confirmOption: boolean | null
+  setConfirmOption: (confirmOption: boolean | null) => void
+
   repositoryData: Repository | null
   setRepositoryData: (repositoryData: Repository) => void
+
+  waitForConfirmation: () => Promise<boolean>
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
+  analyzedRepos: [],
+  setAnalyzedRepos: (analyzedRepos) => set({ analyzedRepos }),
+
   structure: {},
   setStructure: (structure) => set({ structure }),
 
@@ -57,8 +71,26 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   setIsShowModalRepository: (isShowModalRepository) =>
     set({ isShowModalRepository }),
 
+  isShowConfirmationModal: false,
+  setIsShowConfirmationModal: (isShowConfirmationModal) =>
+    set({ isShowConfirmationModal }),
+
+  confirmOption: null,
+  setConfirmOption: (confirmOption) => set({ confirmOption }),
+
   repositoryData: null,
   setRepositoryData: (repositoryData) => set({ repositoryData }),
+
+  waitForConfirmation: () =>
+    new Promise((resolve) => {
+      const unsubscribe = useRepositoryStore.subscribe((state) => {
+        if (state.confirmOption !== null) {
+          resolve(state.confirmOption)
+          set({ confirmOption: null })
+          unsubscribe()
+        }
+      })
+    }),
 })
 
 export const useRepositoryStore = create<IRepositoryStore>()(repositoryStore)

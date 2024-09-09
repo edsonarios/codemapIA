@@ -6,10 +6,18 @@ import { useEffect, useState } from 'react'
 import { Toaster, toast } from 'sonner'
 import Close from './icons/close'
 import { API_URL } from '../view/utils/utils'
+import ModalConfirmation from './modalConfirmation'
 
 export default function ModalOptionsRepository() {
-  const { isShowModalRepository, setIsShowModalRepository, repositoryData } =
-    useRepositoryStore<IRepositoryStore>((state) => state)
+  const {
+    isShowModalRepository,
+    setIsShowModalRepository,
+    repositoryData,
+    analyzedRepos,
+    setAnalyzedRepos,
+    setIsShowConfirmationModal,
+    waitForConfirmation,
+  } = useRepositoryStore<IRepositoryStore>((state) => state)
 
   const [nameRepository, setNameRepository] = useState<string>('')
   const [descriptionRepository, setDescriptionRepository] = useState<string>('')
@@ -43,6 +51,32 @@ export default function ModalOptionsRepository() {
       return
     }
     toast.success(data.message)
+  }
+
+  const handledRemoveRepository = async () => {
+    if (!repositoryData) return
+    setIsShowConfirmationModal(true)
+
+    const isConfirmed = await waitForConfirmation()
+
+    if (!isConfirmed) return
+    const response = await fetch(
+      `${API_URL}/repositories/${repositoryData.id}`,
+      {
+        method: 'DELETE',
+      },
+    )
+    const data = await response.json()
+    if (!response.ok) {
+      toast.error(data.message)
+      return
+    }
+    toast.success(data.message)
+    const newAnalyzedRepos = analyzedRepos.filter(
+      (repo) => repo.id !== repositoryData.id,
+    )
+    setAnalyzedRepos(newAnalyzedRepos)
+    setIsShowModalRepository(false)
   }
 
   useEffect(() => {
@@ -112,12 +146,15 @@ export default function ModalOptionsRepository() {
               </div>
               <div className="space-x-2 flex justify-around">
                 <button
-                  className="p-2 bg-blue-500 rounded-md"
+                  className="p-2 bg-blue-500 hover:bg-blue-400 rounded-md"
                   onClick={handledUpdateRepository}
                 >
                   Save Changes
                 </button>
-                <button className="p-2 bg-red-500 rounded-md">
+                <button
+                  className="p-2 bg-red-500 hover:bg-red-400 rounded-md"
+                  onClick={handledRemoveRepository}
+                >
                   Delete Repository
                 </button>
               </div>
@@ -126,6 +163,7 @@ export default function ModalOptionsRepository() {
         </div>
       )}
       <Toaster position="bottom-center" richColors closeButton />
+      <ModalConfirmation />
     </div>
   )
 }
