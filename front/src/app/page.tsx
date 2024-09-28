@@ -17,6 +17,7 @@ import {
   IRepositoryStore,
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
+import { Toaster, toast } from 'sonner'
 
 export default function Home() {
   const { analyzedRepos, setAnalyzedRepos } =
@@ -27,24 +28,36 @@ export default function Home() {
   const [errorRepoUrl, setErrorRepoUrl] = useState('')
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [isLoadingRepos, setIsLoadingRepos] = useState('')
 
   useEffect(() => {
     const fetchRepos = async () => {
       if (status === 'loading') return
       // console.log('session', session)
-      if (session?.user?.email) {
-        const userId = (session.user as any).id || ''
-        const userResponse = await fetch(`${API_URL}/users/${userId}`)
-        const user = (await userResponse.json()) as User
-        setCurrentUser(user)
+      try {
+        if (session?.user?.email) {
+          const userId = (session.user as any).id || ''
+          const userResponse = await fetch(`${API_URL}/users/${userId}`)
+          if (!userResponse.ok) {
+            setIsLoadingRepos('Error to get repositories')
+            toast.error('Backend unavailable')
+            return
+          }
+          const user = (await userResponse.json()) as User
+          setCurrentUser(user)
 
-        const res = await fetch(`${API_URL}/repositories/${userId}`)
-        const data: Repository[] = await res.json()
-        setAnalyzedRepos(data)
-      } else {
-        const res = await fetch(`${API_URL}/repositories`)
-        const data: Repository[] = await res.json()
-        setAnalyzedRepos(data)
+          const res = await fetch(`${API_URL}/repositories/${userId}`)
+          const data: Repository[] = await res.json()
+          setAnalyzedRepos(data)
+        } else {
+          const res = await fetch(`${API_URL}/repositories`)
+          const data: Repository[] = await res.json()
+          setAnalyzedRepos(data)
+        }
+        setIsLoadingRepos('Repositories not yet analyzed')
+      } catch (error: any) {
+        setIsLoadingRepos('Error to get repositories')
+        toast.error(error.error || 'Backend unavailable')
       }
     }
     fetchRepos()
@@ -199,7 +212,7 @@ export default function Home() {
         </button>
       </form>
 
-      <div className="w-full mt-8 mb-8">
+      <div className="w-full h-full mt-8 mb-8">
         <h4 className="text-center text-2xl mb-4" data-aos="fade-zoom-in">
           {session ? 'Our Repositories' : 'Public Analized Repositories'}
           <span className="text-sm text-gray-500">
@@ -208,12 +221,26 @@ export default function Home() {
               : ''}
           </span>
         </h4>
-        <div className="w-full flex flex-wrap justify-start">
-          {analyzedRepos.map((repo, index) => (
-            <div key={index} className="p-2" data-aos="fade-left">
-              <RepositoryCard repo={repo} session={session} />
+        <div className="w-full flex flex-wrap justify-start h-full">
+          {analyzedRepos.length > 0 ? (
+            analyzedRepos.map((repo, index) => (
+              <div key={index} className="p-2" data-aos="fade-left">
+                <RepositoryCard repo={repo} session={session} />
+              </div>
+            ))
+          ) : (
+            <div className="w-full h-64 flex justify-center items-center">
+              {isLoadingRepos === '' ? (
+                <div>Loading...</div>
+              ) : (
+                <div
+                  className={`border-2 border-dashed p-12 rounded-md ${isLoadingRepos.startsWith('Error') ? 'border-red-800 text-red-500' : ''}`}
+                >
+                  {isLoadingRepos}
+                </div>
+              )}
             </div>
-          ))}
+          )}
         </div>
       </div>
 
@@ -223,6 +250,7 @@ export default function Home() {
         </p>
       </footer>
       <ModalOptionsRepository />
+      <Toaster position="bottom-center" richColors closeButton />
     </main>
   )
 }

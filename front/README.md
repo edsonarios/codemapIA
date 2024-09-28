@@ -39,6 +39,7 @@ src/components/Navbar/Navbar.astro
 * Home Page, show analyzed repositories as cards ✅
 * Animation panelInformation ✅
 * Options to update repository ✅
+* Show message back is not working ✅
 * Different colors by folders to nodes
 * Icons by folder
 * Show a error message in the UI indicate that the data is not found
