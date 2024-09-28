@@ -1,6 +1,7 @@
 import { NodesAndEdges } from '@/app/view/interface/nodesAndEdges.interface'
 import { Repository } from '@/app/view/interface/repository.interface'
 import { type StateCreator, create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface IRepositoryStore {
   analyzedRepos: Repository[]
@@ -40,6 +41,9 @@ export interface IRepositoryStore {
   setRepositoryData: (repositoryData: Repository) => void
 
   waitForConfirmation: () => Promise<boolean>
+
+  modelIA: string
+  setModelIA: (modelIA: string) => void
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   analyzedRepos: [],
@@ -91,6 +95,16 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
         }
       })
     }),
+
+  modelIA: 'gpt-3.5-turbo-0125',
+  setModelIA: (modelIA) => set({ modelIA }),
 })
 
-export const useRepositoryStore = create<IRepositoryStore>()(repositoryStore)
+export const useRepositoryStore = create<IRepositoryStore>()(
+  persist(repositoryStore, {
+    name: 'codemap-store',
+    partialize: (state) => ({
+      modelIA: state.modelIA,
+    }),
+  }),
+)

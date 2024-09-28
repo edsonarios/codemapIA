@@ -6,6 +6,15 @@ import {
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
 import { API_URL } from '../utils/utils'
+import { OpenAIChatModelId } from '@ai-sdk/openai/internal'
+
+const modelOptions: OpenAIChatModelId[] = [
+  'gpt-3.5-turbo',
+  'gpt-4o-mini',
+  'gpt-4o',
+  'gpt-4',
+  'gpt-4-turbo',
+]
 
 export function PanelInformation({
   keyInfoPanel,
@@ -16,8 +25,16 @@ export function PanelInformation({
   setKeyInfoPanel: (key: string | null) => void
   apiKey: string
 }) {
-  const { contentFiles, fileDetails, setFileDetails, structure, dataId } =
-    useRepositoryStore<IRepositoryStore>((state) => state)
+  const {
+    contentFiles,
+    fileDetails,
+    setFileDetails,
+    structure,
+    dataId,
+    modelIA,
+    setModelIA,
+  } = useRepositoryStore<IRepositoryStore>((state) => state)
+
   const [codeContent, setCodeContent] = useState<string>('')
   const [detailByIA, setDetailByIA] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -46,6 +63,7 @@ export function PanelInformation({
         },
         body: JSON.stringify({
           apiKey,
+          modelIA,
           messages: [
             {
               role: 'user',
@@ -115,6 +133,9 @@ Este es un ejemplo de output que quiero,
           .replace(/\n/g, '')
           .replace(/\\n/g, '')
           .replace(/"/g, '')
+          .replace(/```/g, '')
+          .replace(/```/g, '')
+          .replace(/html/g, '')
         if (valueString.includes('d:{finishReason:stop')) {
           break
         }
@@ -139,6 +160,11 @@ Este es un ejemplo de output que quiero,
       setDetailByIA(details)
     }
   }
+
+  const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setModelIA(event.target.value)
+  }
+
   if (!keyInfoPanel) return null
 
   return (
@@ -178,9 +204,21 @@ Este es un ejemplo de output que quiero,
             </button>
             {loading && <div id="spinner" className="loader ml-2"></div>}
           </div>
-          <h4 className="text-xs mt-1 text-gray-200">
-            Using ChatGPT, model: gpt-3.5-turbo-0125
-          </h4>
+          <div className="text-xs mt-1 text-gray-200 flex items-center">
+            <h4>{`Using ChatGPT, model:`}</h4>
+            <select
+              className="ml-2 p-1 rounded border border-gray-600 bg-gray-800 text-white"
+              value={modelIA}
+              onChange={handleModelChange}
+            >
+              {/* Renderiza las opciones del selector */}
+              {modelOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
           {detailByIA !== '' ? (
             <div className="bg-white p-4 mt-4 rounded shadow text-black">
               <div dangerouslySetInnerHTML={{ __html: detailByIA }} />

@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 export const maxDuration = 30
 
 export async function POST(req: Request) {
-  const { messages, apiKey } = await req.json()
+  const { messages, apiKey, modelIA } = await req.json()
   const key = apiKey || process.env.OPENAI_API_KEY
   if (!key) {
     return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     const data = new StreamData()
     const result = await streamText({
       // model: openai('gpt-4-turbo'),
-      model: openai('gpt-3.5-turbo-0125'),
+      model: openai(modelIA),
       messages,
       onFinish() {
         data.close()
