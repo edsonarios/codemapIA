@@ -35,3 +35,12 @@
     transform: rotate(360deg);
   }
 }
+
+.repoCard {
+  transition: all 0.5s ease-in-out;
+  interpolate-size: allow-keywords;
+}
+
+.repoCard:hover {
+  height: auto;
+}
