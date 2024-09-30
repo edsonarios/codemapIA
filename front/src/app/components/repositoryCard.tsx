@@ -21,7 +21,7 @@ export default function RepositoryCard({
     useRepositoryStore<IRepositoryStore>((state) => state)
 
   return (
-    <section className="relative w-[350px] min-h-52 h-52 border-2 border-gray-500 rounded-lg p-4 space-y-2 hover:bg-neutral-600/20 transition-all ease-in-out duration-100 hover:h-auto group">
+    <section className="relative w-[350px] min-h-52 h-52 border-2 border-gray-500 rounded-lg p-4 space-y-2 hover:bg-neutral-600/20 group">
       {session && (
         <button
           className="absolute flex justify-center items-center rounded-md top-0 right-0 hover:bg-neutral-100/20 p-1"

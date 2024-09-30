@@ -34,8 +34,6 @@ export default function GraphPage() {
   const [apiKey, setApiKey] = useState('')
   const [error, setError] = useState('')
 
-  const [errorData, setErrorData] = useState('')
-
   const handleApiKeySubmit = (event: any) => {
     event.preventDefault()
     if (apiKeyValue === '') {
@@ -59,8 +57,6 @@ export default function GraphPage() {
         const response = await res.json()
         if (!res.ok) {
           toast.error(response.message)
-          // Todo - Show a error message in the UI indicate that the data is not found
-          // setErrorData(response.message)
           return
         }
         setParamRepoName(paramRepository)

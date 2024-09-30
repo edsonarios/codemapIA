@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ColapseIcon } from '../icons/colapse'
 import { MonacoEditor } from '../utils/MonacoEditor'
 import {
@@ -7,6 +7,7 @@ import {
 } from '@/components/store/repositoryStore'
 import { API_URL } from '../utils/utils'
 import { OpenAIChatModelId } from '@ai-sdk/openai/internal'
+// import { debounce } from 'lodash'
 
 const modelOptions: OpenAIChatModelId[] = [
   'gpt-3.5-turbo',
@@ -33,11 +34,14 @@ export function PanelInformation({
     dataId,
     modelIA,
     setModelIA,
+    panelWidth,
+    setPanelWidth,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
 
   const [codeContent, setCodeContent] = useState<string>('')
   const [detailByIA, setDetailByIA] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  const [size, setSize] = useState(panelWidth)
 
   //! Update content by keyInfoPanel
   useEffect(() => {
@@ -165,14 +169,45 @@ Este es un ejemplo de output que quiero,
     setModelIA(event.target.value)
   }
 
+  const isResizing = useRef(false)
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isResizing.current = true
+    e.preventDefault()
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing.current) return
+    setSize((prevWidth) => {
+      const newSize = Math.max(prevWidth - e.movementX, 100)
+
+      // debounce(() => setPanelWidth(newSize), 500)
+      setPanelWidth(newSize)
+      return newSize
+    })
+  }
+
+  const handleMouseUp = () => {
+    isResizing.current = false
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', handleMouseUp)
+  }
+
   if (!keyInfoPanel) return null
 
   return (
     <div
       id="info-panel"
-      className="absolute right-0 top-0 h-full w-1/3 bg-[#353847] p-4 border-l-2 z-10"
+      className={`absolute right-0 top-0 h-full bg-[#353847] p-4 border-l-2 z-10`}
+      style={{ width: `${size}px` }}
       data-aos="fade-left"
     >
+      <div
+        className="absolute right-[calc(100%-2px)] top-0 h-full w-2 hover:bg-gray-500 cursor-col-resize z-50 transition-all "
+        onMouseDown={handleMouseDown}
+      />
       <div className="relative w-full h-full">
         <div className="sticky right-0 top-0">
           <div className="flex flex-row items-center align-middle">
@@ -191,11 +226,11 @@ Este es un ejemplo de output que quiero,
           <div className="flex flex-row items-center mt-2">
             <button
               className={`rounded-md text-white p-2
-              ${
-                detailByIA !== ''
-                  ? 'bg-yellow-400 hover:bg-yellow-300'
-                  : 'bg-blue-500 hover:bg-blue-400'
-              }`}
+                ${
+                  detailByIA !== ''
+                    ? 'bg-yellow-400 hover:bg-yellow-300'
+                    : 'bg-blue-500 hover:bg-blue-400'
+                }`}
               onClick={() => handledGetDetailsByIA(detailByIA !== '')}
             >
               {detailByIA !== ''

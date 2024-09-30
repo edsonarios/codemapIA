@@ -40,11 +40,11 @@ src/components/Navbar/Navbar.astro
 * Animation panelInformation ✅
 * Options to update repository ✅
 * Show message back is not working ✅
+* Show a error message in the UI indicate that the data is not found ✅
 * Choise an model to IA ✅
-* Split panel
+* Split panel ✅
 * Different colors by folders to nodes
 * Icons by folder
-* Show a error message in the UI indicate that the data is not found
 
 ### Optional
 * Logged in users have 20 free requests to the AI

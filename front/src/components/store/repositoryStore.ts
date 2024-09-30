@@ -44,6 +44,9 @@ export interface IRepositoryStore {
 
   modelIA: string
   setModelIA: (modelIA: string) => void
+
+  panelWidth: number
+  setPanelWidth: (panelWidth: number) => void
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   analyzedRepos: [],
@@ -98,6 +101,9 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
 
   modelIA: 'gpt-3.5-turbo-0125',
   setModelIA: (modelIA) => set({ modelIA }),
+
+  panelWidth: 400,
+  setPanelWidth: (panelWidth) => set({ panelWidth }),
 })
 
 export const useRepositoryStore = create<IRepositoryStore>()(
@@ -105,6 +111,7 @@ export const useRepositoryStore = create<IRepositoryStore>()(
     name: 'codemap-store',
     partialize: (state) => ({
       modelIA: state.modelIA,
+      panelWidth: state.panelWidth,
     }),
   }),
 )
