@@ -30,6 +30,12 @@ export class RepositoriesController {
     return this.repositoriesService.findAll()
   }
 
+  @Get('getOne/:id')
+  findOne(@Param('id') id: string) {
+    this.logger.log(`GET findOne Repo: ${id}`)
+    return this.repositoriesService.findOne(id)
+  }
+
   @Get(':id')
   findById(@Param('id') id: string) {
     this.logger.log(`GET findById:_ ${f(id)}`)

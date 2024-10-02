@@ -47,6 +47,9 @@ export interface IRepositoryStore {
 
   panelWidth: number
   setPanelWidth: (panelWidth: number) => void
+
+  language: string
+  setLanguage: (language: string) => void
 }
 const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
   analyzedRepos: [],
@@ -104,6 +107,9 @@ const repositoryStore: StateCreator<IRepositoryStore> = (set) => ({
 
   panelWidth: 400,
   setPanelWidth: (panelWidth) => set({ panelWidth }),
+
+  language: 'EN',
+  setLanguage: (language) => set({ language }),
 })
 
 export const useRepositoryStore = create<IRepositoryStore>()(
@@ -112,6 +118,8 @@ export const useRepositoryStore = create<IRepositoryStore>()(
     partialize: (state) => ({
       modelIA: state.modelIA,
       panelWidth: state.panelWidth,
+      language: state.language,
+      repositoryData: state.repositoryData,
     }),
   }),
 )

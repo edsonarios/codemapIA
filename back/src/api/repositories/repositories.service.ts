@@ -133,8 +133,12 @@ export class RepositoriesService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} repository`
+  findOne(id: string) {
+    try {
+      return this.dbService.findRepositoryById(id)
+    } catch (error) {
+      throw new InternalServerErrorException('Error getting the repository')
+    }
   }
 
   async update(id: string, updateRepositoryDto: Repositories) {

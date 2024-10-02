@@ -7,7 +7,7 @@ import {
 } from '@/components/store/repositoryStore'
 import { API_URL } from '../utils/utils'
 import { OpenAIChatModelId } from '@ai-sdk/openai/internal'
-// import { debounce } from 'lodash'
+import { getExplainPrompt } from './prompt'
 
 const modelOptions: OpenAIChatModelId[] = [
   'gpt-3.5-turbo',
@@ -16,6 +16,8 @@ const modelOptions: OpenAIChatModelId[] = [
   'gpt-4',
   'gpt-4-turbo',
 ]
+
+const languageOptions = ['EN', 'ES']
 
 export function PanelInformation({
   keyInfoPanel,
@@ -36,6 +38,8 @@ export function PanelInformation({
     setModelIA,
     panelWidth,
     setPanelWidth,
+    language,
+    setLanguage,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
 
   const [codeContent, setCodeContent] = useState<string>('')
@@ -71,45 +75,12 @@ export function PanelInformation({
           messages: [
             {
               role: 'user',
-              content: `Tengo un proyecto con la siguiente estructura:
-${structure}
-Quiero que me expliques el archivo ${nameFile} cuyo contenido es:
-${contentFile}
-Primero, dame un breve resumen del archivo. Luego, explica su relación y propósito dentro del proyecto en general.
-Asegurate de responderme en formato html como en el ejemplo que te mandare a continuacion.
-Este es un ejemplo de output que quiero,
-<div>
-  <p>
-    El archivo <strong>tsconfig.json</strong> configura el compilador TypeScript para el proyecto.
-  </p>
-  <br />
-
-  <h3><strong>Opciones Principales:</strong></h3>
-  <ul>
-    <li><strong>allowJs:</strong> Permite compilar JavaScript.</li>
-    <li><strong>strict:</strong> Activa verificaciones estrictas.</li>
-    <li><strong>target:</strong> Compila a ECMAScript 2022.</li>
-    <li><strong>lib:</strong> Usa bibliotecas de ECMAScript 2023.</li>
-    <li><strong>moduleResolution:</strong> Estrategia de resolución de módulos Node.</li>
-  </ul>
-  <br />
-
-  <h3><strong>Exclusiones:</strong></h3>
-  <ul>
-    <li>Excluye <strong>node_modules</strong> y <strong>cdk.out</strong>.</li>
-  </ul>
-  <br />
-
-  <h3><strong>Relación con el Proyecto:</strong></h3>
-  <p>
-    <strong>tsconfig.json</strong> asegura que el código TypeScript se compile correctamente, siguiendo los estándares del proyecto.
-  </p>
-  <br />
-  <ul>
-    <li>Compila de manera consistente los archivos en <strong>src/</strong> y <strong>cdk/</strong>.</li>
-    <li>Facilita el uso de decoradores y metadatos para funcionalidades avanzadas.</li>
-  </ul>
-</div>`,
+              content: getExplainPrompt(
+                language,
+                structure,
+                nameFile,
+                contentFile,
+              ),
             },
           ],
         }),
@@ -167,6 +138,12 @@ Este es un ejemplo de output que quiero,
 
   const handleModelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setModelIA(event.target.value)
+  }
+
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setLanguage(event.target.value)
   }
 
   const isResizing = useRef(false)
@@ -240,14 +217,27 @@ Este es un ejemplo de output que quiero,
             {loading && <div id="spinner" className="loader ml-2"></div>}
           </div>
           <div className="text-xs mt-1 text-gray-200 flex items-center">
-            <h4>{`Using ChatGPT, model:`}</h4>
+            {/* //? Options model ChatGPT */}
+            <h4>OpenAI model</h4>
             <select
               className="ml-2 p-1 rounded border border-gray-600 bg-gray-800 text-white"
               value={modelIA}
               onChange={handleModelChange}
             >
-              {/* Renderiza las opciones del selector */}
               {modelOptions.map((option, index) => (
+                <option key={index} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            {/* //? Options language */}
+            <h4 className="ml-3">Language</h4>
+            <select
+              className="ml-2 p-1 rounded border border-gray-600 bg-gray-800 text-white"
+              value={language}
+              onChange={handleLanguageChange}
+            >
+              {languageOptions.map((option, index) => (
                 <option key={index} value={option}>
                   {option}
                 </option>

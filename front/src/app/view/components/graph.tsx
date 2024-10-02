@@ -13,6 +13,8 @@ import { API_URL } from '../utils/utils'
 import BackHome from '@/components/backHome'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { Repository } from '../interface/repository.interface'
+import ArrowUpRight from '@/app/components/icons/arrowUpRight'
 
 export default function GraphPage() {
   const searchParams = useSearchParams()
@@ -27,6 +29,8 @@ export default function GraphPage() {
     setFileDetails,
     setDataId,
     dataId,
+    repositoryData,
+    setRepositoryData,
   } = useRepositoryStore<IRepositoryStore>((state) => state)
   const [panelInfo, setPanelInfo] = useState<string | null>(null)
 
@@ -51,6 +55,12 @@ export default function GraphPage() {
   useEffect(() => {
     const fetchDatas = async () => {
       try {
+        const repo = await fetch(
+          `${API_URL}/repositories/getOne/${paramRepository}`,
+        )
+        const repoData = (await repo.json()) as Repository
+        setRepositoryData(repoData)
+
         const res = await fetch(
           `${API_URL}/data?${paramViewPageName}=${encodeURIComponent(paramRepository)}`,
         )
@@ -129,7 +139,7 @@ export default function GraphPage() {
         onClick={saveNodesAndEdges}
         disabled={isDisableButton}
       >
-        Save Status
+        Save Graphs
       </button>
 
       {/* Api Key */}
@@ -181,18 +191,23 @@ export default function GraphPage() {
         </div>
       ) : null}
 
-      <h1 className="text-4xl mt-4" data-aos="fade-down">
-        CodeMap AI
-      </h1>
-      <h2
-        className="text-center text-xl mt-2 text-balance text-[#5cc8f7]"
-        data-aos="fade-down"
-      >
-        Intelligent mapping of code structure with detailed AI explanations
-      </h2>
-      <h3 className="text-gray-400 text-sm text-balance" data-aos="fade-down">
-        Click on a node to see more information
-      </h3>
+      <div className="flex flex-col items-center" data-aos="fade-down">
+        <h1 className="text-4xl mt-4">CodeMap AI</h1>
+        {repositoryData && (
+          <a
+            className="text-[#5cc8f7] flex flex-row justify-center items-center group hover:underline mt-2"
+            href={repositoryData.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="text-2xl">{repositoryData.url}</div>
+            <ArrowUpRight />
+          </a>
+        )}
+        <h3 className="text-gray-400 text-sm text-balance mt-2">
+          Click on a node to see more information
+        </h3>
+      </div>
       {storeNodesAndEdges.map((nodeAndEdge, index) => (
         <div
           key={index}

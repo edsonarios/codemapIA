@@ -112,6 +112,18 @@ export class DBService {
     }
   }
 
+  async findRepositoryById(id: string) {
+    this.logger.log('findRepositoryById')
+    try {
+      return await this.repoRepository.findOne({
+        where: { id },
+      })
+    } catch (error) {
+      this.logger.error(`findRepositoryById:_ ${f(error)}`)
+      throw new Error(error)
+    }
+  }
+
   async findRepository(url: string, userId: string | null) {
     this.logger.log('findRepository')
     try {

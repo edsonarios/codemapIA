@@ -43,6 +43,7 @@ src/components/Navbar/Navbar.astro
 * Show a error message in the UI indicate that the data is not found ✅
 * Choise an model to IA ✅
 * Split panel ✅
+* Choise language explanation ✅
 * Different colors by folders to nodes
 * Icons by folder
 
