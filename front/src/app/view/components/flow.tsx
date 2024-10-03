@@ -51,6 +51,7 @@ export function Flow({
   const handleNodeClick = (event: any, node: any) => {
     setPanelInfo(node.id === panelInfo ? null : node.id)
   }
+
   useEffect(() => {
     setNodes((nds) =>
       nds.map((n) =>

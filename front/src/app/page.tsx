@@ -18,6 +18,7 @@ import {
   useRepositoryStore,
 } from '@/components/store/repositoryStore'
 import { Toaster, toast } from 'sonner'
+import ExampleGraph from './components/exampleGraph'
 
 export default function Home() {
   const { analyzedRepos, setAnalyzedRepos } =
@@ -162,13 +163,16 @@ export default function Home() {
         )}
       </div>
 
-      <div className="text-center text-balance">
-        <h1 className="text-6xl mt-4" data-aos="fade-down">
-          CodeMap AI
-        </h1>
-        <h2 className="text-2xl mt-4 text-[#5cc8f7]" data-aos="fade-down">
-          Intelligent mapping of code structure with detailed AI explanations
-        </h2>
+      <div className="relative flex justify-between">
+        <div className="text-left text-balance mt-6 mr-4">
+          <h1 className="text-6xl mt-4" data-aos="fade-down">
+            CodeMap AI
+          </h1>
+          <h2 className="text-2xl mt-4 text-[#5cc8f7]" data-aos="fade-down">
+            Intelligent mapping of code structure with detailed AI explanations
+          </h2>
+        </div>
+        <ExampleGraph />
       </div>
       <form
         onSubmit={handleSubmit}
