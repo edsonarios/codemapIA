@@ -1,12 +1,13 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
 // import { UpdateUserDto } from './dto/update-user.dto'
 import { DBService } from '../db/db.service'
 import * as bcrypt from 'bcrypt'
+import { VercelLogger } from 'src/common/nestConfig/logger'
 
 @Injectable()
 export class UsersService {
-  private readonly logger = new Logger(UsersService.name)
+  private readonly logger = new VercelLogger(UsersService.name)
   constructor(private readonly dbService: DBService) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -38,7 +39,7 @@ export class UsersService {
         }
       }
     } catch (error) {
-      this.logger.error(`create:_ ${error}`)
+      this.logger.error('create', error)
       throw error
     }
   }

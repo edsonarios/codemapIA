@@ -1,15 +1,15 @@
-import { Logger, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { RepositoriesModule } from './api/repositories/repositories.module'
 import { DbModule } from './api/db/db.module'
 import { DataModule } from './api/data/data.module'
-import { f } from './common/nestConfig/logger'
+import { VercelLogger } from './common/nestConfig/logger'
 import { UsersModule } from './api/users/users.module'
 import { LoginModule } from './api/login/login.module'
 
 const { STAGE } = process.env
-const logger = new Logger('AppModule')
+const logger = new VercelLogger('AppModule')
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,7 +25,8 @@ const logger = new Logger('AppModule')
           database: process.env.DB_NAME,
         }
         if (STAGE !== 'prod') {
-          logger.verbose(`Connecting Base DB by:_ ${f(credentialsBase)}`)
+          logger.verbose('Connecting Base DB by', credentialsBase)
+          // logger.log('Connecting Base DB by', credentialsBase)
         }
 
         return {
@@ -36,7 +37,7 @@ const logger = new Logger('AppModule')
           password: credentialsBase.password,
           database: credentialsBase.database,
           autoLoadEntities: true,
-          synchronize: true,
+          synchronize: false,
           logging: false,
           ssl: { rejectUnauthorized: false },
         }
