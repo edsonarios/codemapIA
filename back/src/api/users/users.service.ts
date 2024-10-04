@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto'
 // import { UpdateUserDto } from './dto/update-user.dto'
 import { DBService } from '../db/db.service'
 import * as bcrypt from 'bcrypt'
-import { VercelLogger } from 'src/common/nestConfig/logger'
+import { VercelLogger } from '../../common/nestConfig/logger'
 
 @Injectable()
 export class UsersService {
