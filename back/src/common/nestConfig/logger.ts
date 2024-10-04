@@ -15,7 +15,8 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
   constructor(context?: string) {
     super()
     this.context = context
-    this.isLocal = process.env.STAGE === 'local'
+    // this.isLocal = process.env.STAGE === 'local'
+    this.isLocal = true
     const transports: Transport[] = [
       new winston.transports.Console({
         format: winston.format.printf(

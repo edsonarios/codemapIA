@@ -34,7 +34,7 @@ export class RepositoriesService {
           }
         }),
       }
-      this.logger.debug(',response', auxResponse)
+      this.logger.debug('response', auxResponse)
       return response
     } catch (error) {
       throw error
