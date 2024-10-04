@@ -15,8 +15,7 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
   constructor(context?: string) {
     super()
     this.context = context
-    // this.isLocal = process.env.STAGE === 'local'
-    this.isLocal = true
+    this.isLocal = process.env.STAGE === 'local'
     const transports: Transport[] = [
       new winston.transports.Console({
         format: winston.format.printf(
@@ -28,7 +27,6 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
               ? messageAsArray.pop()
               : 'App'
             const contextMessage = `[${context || this.context || currentDefaultContext}]`
-            // const contextMessage = ''
             const nest = this.colorizedMessage(level, '[Nest]')
             const parsedLevelMessage = level === 'info' ? 'log' : level
             const levelMessage = this.colorizedMessage(
@@ -36,7 +34,8 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
               parsedLevelMessage.toUpperCase(),
             )
             const messageToLog = this.formatMessages(level, message)
-            return `${nest} ${timestamp} ${levelMessage} ${yellow(contextMessage)} ${messageToLog}`
+            const time = this.isLocal ? timestamp : ''
+            return `${nest} ${time} ${levelMessage} ${yellow(contextMessage)} ${messageToLog}`
           },
         ),
       }),
@@ -104,13 +103,14 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
 
   private formatMessages(level: string, messages: any[]) {
     const parsedMessages = this.parseMessages(messages)
-    const { STAGE } = process.env
+    // const { STAGE } = process.env
     return parsedMessages
       .map((message) => {
         return typeof message === 'object'
           ? inspect(message, {
               depth: null,
-              colors: STAGE === 'local' ? true : false,
+              // colors: STAGE === 'local' ? true : false,
+              colors: true,
             })
           : this.colorizedMessage(level, message)
       })
@@ -148,4 +148,4 @@ const defaultContext = [
   'NestApplication',
 ]
 
-const ignoreContext = ['InstanceLoader', 'RouterExplorer', 'RoutesResolver']
+// const ignoreContext = ['InstanceLoader', 'RouterExplorer', 'RoutesResolver']
