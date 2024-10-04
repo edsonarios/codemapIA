@@ -6,15 +6,16 @@ import {
   Param,
   // Patch,
   // Delete,
-  Logger,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
+import { VercelLogger } from 'src/common/nestConfig/logger'
+// import { VercelLogger } from '../../common/nestConfig/logger'
 // import { UpdateUserDto } from './dto/update-user.dto'
 
 @Controller('users')
 export class UsersController {
-  private readonly logger = new Logger(UsersController.name)
+  private readonly logger = new VercelLogger(UsersController.name)
   constructor(private readonly usersService: UsersService) {}
 
   @Post()

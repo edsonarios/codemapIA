@@ -103,14 +103,13 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
 
   private formatMessages(level: string, messages: any[]) {
     const parsedMessages = this.parseMessages(messages)
-    // const { STAGE } = process.env
+    const { STAGE } = process.env
     return parsedMessages
       .map((message) => {
         return typeof message === 'object'
           ? inspect(message, {
               depth: null,
-              // colors: STAGE === 'local' ? true : false,
-              colors: true,
+              colors: STAGE === 'local' ? true : false,
             })
           : this.colorizedMessage(level, message)
       })

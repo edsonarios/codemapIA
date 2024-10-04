@@ -27,7 +27,6 @@ const logger = new VercelLogger('AppModule')
         }
         if (STAGE !== 'prod') {
           logger.verbose('Connecting Base DB by', credentialsBase)
-          // logger.log('Connecting Base DB by', credentialsBase)
         }
 
         return {
