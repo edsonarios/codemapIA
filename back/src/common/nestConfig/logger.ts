@@ -42,7 +42,7 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
     ]
 
     this.logger = winston.createLogger({
-      level: process.env.LOG_LEVEL || 'verbose',
+      level: process.env.LOG_LEVEL || 'debug',
       format: winston.format.combine(
         winston.format.timestamp({ format: 'HH:mm:ss' }),
         winston.format.errors({ stack: true }),
@@ -73,29 +73,6 @@ export class VercelLogger extends ConsoleLogger implements LoggerService {
   verbose(...messages: any[]) {
     this.logger.verbose(messages)
   }
-
-  // private madeLog(
-  //   level: string,
-  //   messages: string[],
-  //   // context?: string,
-  //   // trace?: string,
-  // ) {
-  //   const messageAndObject = message.split(':_')
-  //   if (messageAndObject.length > 1) {
-  //     let messageToLog = `${level} [${context}] ${messageAndObject[0]}`
-  //     const logEntry: any = { message: messageToLog }
-  //     if (trace) {
-  //       messageToLog = `${messageToLog} ${trace}`
-  //     }
-  //     this.logger.info(logEntry)
-
-  //     for (let index = 1; index < messageAndObject.length; index++) {
-  //       this.logger.info(messageAndObject[index])
-  //     }
-  //   } else {
-  //     this.logger.info(`${level} [${context}] ${message}`)
-  //   }
-  // }
 
   private colorizedMessage(level: string, message: string) {
     let coloredMessage = message

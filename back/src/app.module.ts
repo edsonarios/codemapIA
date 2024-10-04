@@ -10,6 +10,7 @@ import { LoginModule } from './api/login/login.module'
 
 const { STAGE } = process.env
 const logger = new VercelLogger('AppModule')
+
 @Module({
   imports: [
     ConfigModule.forRoot({

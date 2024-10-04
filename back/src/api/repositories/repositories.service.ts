@@ -5,7 +5,6 @@ import extract from 'extract-zip' // work in prod
 import {
   Injectable,
   InternalServerErrorException,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common'
 import { CreateRepositoryDto } from './dto/create-repository.dto'
@@ -13,13 +12,13 @@ import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
-import { f } from '../../common/nestConfig/logger'
+import { f, VercelLogger } from '../../common/nestConfig/logger'
 import { getDescriptionByIA } from './ai'
 import { Repositories } from '../db/entities/repositories.entity'
 
 @Injectable()
 export class RepositoriesService {
-  private readonly logger = new Logger(RepositoriesService.name)
+  private readonly logger = new VercelLogger(RepositoriesService.name)
   constructor(private readonly dbService: DBService) {}
 
   async findAll() {
@@ -35,7 +34,7 @@ export class RepositoriesService {
           }
         }),
       }
-      this.logger.debug(`response:_ ${f(auxResponse)}`)
+      this.logger.debug(',response', auxResponse)
       return response
     } catch (error) {
       throw error
