@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/create-user.dto'
-import { VercelLogger } from 'src/common/nestConfig/logger'
+import { VercelLogger } from '@/common/nestConfig/logger'
 // import { VercelLogger } from '../../common/nestConfig/logger'
 // import { UpdateUserDto } from './dto/update-user.dto'
 
