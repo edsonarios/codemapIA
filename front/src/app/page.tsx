@@ -163,8 +163,8 @@ export default function Home() {
         )}
       </div>
 
-      <div className="relative flex justify-between">
-        <div className="text-left text-balance mt-6 mr-4">
+      <div className="relative flex flex-col lg:flex-row justify-between">
+        <div className="text-center lg:text-left text-balance mt-6 mr-4 max-w-[500px]">
           <h1 className="text-6xl mt-4" data-aos="fade-down">
             CodeMap AI
           </h1>
@@ -176,13 +176,13 @@ export default function Home() {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-row p-2 items-center w-full justify-center mt-6"
+        className="flex flex-col md:flex-row p-2 items-center w-full justify-center mt-6 space-y-4"
         data-aos="fade-in"
       >
         <h4>Url GitHub Repository</h4>
         <div className="relative w-[50%] ml-4 flex flex-col items-start">
           <input
-            className="p-2 w-full text-black"
+            className="p-2 w-full text-black mb-5 md:mb-0"
             type="text"
             value={repoUrl}
             onChange={(e) => {
