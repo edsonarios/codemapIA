@@ -1,8 +1,8 @@
 import { generateText } from 'ai'
 import { openai } from '@ai-sdk/openai'
-import { Logger } from '@nestjs/common'
+import { VercelLogger } from '../../common/nestConfig/logger'
 
-const logger = new Logger('getDescriptionByIA')
+const logger = new VercelLogger('getDescriptionByIA')
 export async function getDescriptionByIA(
   url: string,
   structure: Record<string, string[]>,

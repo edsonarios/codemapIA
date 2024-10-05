@@ -1,16 +1,17 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 // import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
 import { UpdateDataDto } from './dto/update-data.dto'
 import { DBService } from '../db/db.service'
-import { f } from '../../common/nestConfig/logger'
+import { VercelLogger } from '../../common/nestConfig/logger'
 import { PatchDataDto } from './dto/patch-data.dto'
 
 @Injectable()
 export class DataService {
-  private readonly logger = new Logger(DataService.name)
+  private readonly logger = new VercelLogger(DataService.name)
   constructor(private readonly dbService: DBService) {}
 
   async findByRepositoryId(repositoryId: string) {
+    this.logger.log('findByRepositoryId')
     try {
       const response = await this.dbService.getDatasByRepositoryId(repositoryId)
       if (!response) {
@@ -18,7 +19,7 @@ export class DataService {
       }
       return response
     } catch (error) {
-      this.logger.error(`getRepositories:_ ${f(error)}`)
+      this.logger.error('findByRepositoryId', error)
       throw error
     }
   }
@@ -40,7 +41,7 @@ export class DataService {
       await this.dbService.updateDatas(dataId, updateDataDto)
       return { response: 'Saved successfully' }
     } catch (error) {
-      this.logger.error(`update:_ ${f(error)}`)
+      this.logger.error('update', error)
       throw error
     }
   }
@@ -53,7 +54,7 @@ export class DataService {
       await this.dbService.updateDatas(dataId, currentData)
       return { response: 'Saved successfully' }
     } catch (error) {
-      this.logger.error(`update:_ ${f(error)}`)
+      this.logger.error('patch', error)
       throw error
     }
   }

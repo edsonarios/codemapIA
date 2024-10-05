@@ -12,7 +12,7 @@ import { DBService } from '../db/db.service'
 import { routePath } from '../../common/utils'
 import axios from 'axios'
 import { processRepository } from './processRepository'
-import { f, VercelLogger } from '../../common/nestConfig/logger'
+import { VercelLogger } from '../../common/nestConfig/logger'
 import { getDescriptionByIA } from './ai'
 import { Repositories } from '../db/entities/repositories.entity'
 
@@ -141,7 +141,7 @@ export class RepositoriesService {
   }
 
   async update(id: string, updateRepositoryDto: Repositories) {
-    this.logger.log(`update:_ ${f(updateRepositoryDto)}`)
+    this.logger.log('update', updateRepositoryDto)
     try {
       const response = await this.dbService.updateRepository(
         id,
@@ -157,7 +157,7 @@ export class RepositoriesService {
   }
 
   async remove(id: string) {
-    this.logger.log(`remove:_ ${f(id)}`)
+    this.logger.log('remove', id)
     try {
       const response = await this.dbService.removeRepository(id)
       if (response.affected === 0) {
@@ -165,6 +165,7 @@ export class RepositoriesService {
       }
       return { message: 'Repository removed successfully' }
     } catch (error) {
+      this.logger.error('remove', error)
       throw new InternalServerErrorException('Error removing the repository')
     }
   }

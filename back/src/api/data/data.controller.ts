@@ -6,23 +6,22 @@ import {
   Patch,
   // Delete,
   // Param,
-  Logger,
   Query,
   Param,
 } from '@nestjs/common'
 import { DataService } from './data.service'
-// import { CreateNodesAndEdgeDto } from './dto/create-nodes-and-edge.dto'
 import { UpdateDataDto } from './dto/update-data.dto'
 import { PatchDataDto } from './dto/patch-data.dto'
+import { VercelLogger } from '../../common/nestConfig/logger'
 
 @Controller('data')
 export class DataController {
-  private readonly logger = new Logger(DataController.name)
+  private readonly logger = new VercelLogger(DataController.name)
   constructor(private readonly nodesAndEdgesService: DataService) {}
 
   @Get()
   findQuery(@Query('repository') repositoryId: string) {
-    this.logger.log(`findQuery: ${repositoryId}`)
+    this.logger.log('findQuery', repositoryId)
     return this.nodesAndEdgesService.findByRepositoryId(repositoryId)
   }
 
@@ -41,13 +40,13 @@ export class DataController {
     @Param('dataId') dataId: string,
     @Body() updateDataDto: UpdateDataDto,
   ) {
-    this.logger.log(`update: ${dataId}`)
+    this.logger.log('update', dataId, updateDataDto)
     return this.nodesAndEdgesService.update(dataId, updateDataDto)
   }
 
   @Patch(':dataId')
   patch(@Param('dataId') dataId: string, @Body() patchDataDto: PatchDataDto) {
-    this.logger.log(`patch: ${dataId}`)
+    this.logger.log('patch', dataId, patchDataDto)
     return this.nodesAndEdgesService.patch(dataId, patchDataDto)
   }
 

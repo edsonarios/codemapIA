@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { IsNull, Repository } from 'typeorm'
 import { Repositories } from './entities/repositories.entity'
-import { f } from '../../common/nestConfig/logger'
+import { VercelLogger } from '../../common/nestConfig/logger'
 import { Datas } from './entities/datas.entity'
 import { formatRepositoryName } from '../../common/utils'
 import { UpdateDataDto } from '../data/dto/update-data.dto'
@@ -11,7 +11,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto'
 
 @Injectable()
 export class DBService {
-  private readonly logger = new Logger(DBService.name)
+  private readonly logger = new VercelLogger(DBService.name)
 
   constructor(
     @InjectRepository(Users)
@@ -33,7 +33,7 @@ export class DBService {
       await this.usersRepository.save(newUser)
       return newUser
     } catch (error) {
-      this.logger.error(`createUser:_ ${f(error)}`)
+      this.logger.error('createUser', error)
       throw new Error(error)
     }
   }
@@ -48,7 +48,7 @@ export class DBService {
         },
       })
     } catch (error) {
-      this.logger.error(`getUserByEmailAndProvider:_ ${f(error)}`)
+      this.logger.error('getUserByEmailAndProvider', error)
       throw new Error(error)
     }
   }
@@ -58,7 +58,7 @@ export class DBService {
     try {
       return await this.usersRepository.update(user.id, updateUserDto)
     } catch (error) {
-      this.logger.error(`updateUser:_ ${f(error)}`)
+      this.logger.error('updateUser', error)
       throw new Error(error)
     }
   }
@@ -70,7 +70,7 @@ export class DBService {
         where: { id },
       })
     } catch (error) {
-      this.logger.error(`getUserById:_ ${f(error)}`)
+      this.logger.error('getUserById', error)
       throw new Error(error)
     }
   }
@@ -90,13 +90,13 @@ export class DBService {
 
       return response
     } catch (error) {
-      this.logger.error(`getRepositories:_ ${f(error)}`)
+      this.logger.error('getRepositories', error)
       throw new Error(error)
     }
   }
 
   async getRepositoriesByUserId(id: string) {
-    this.logger.log('getRepositoriesById')
+    this.logger.log('getRepositoriesByUserId')
     try {
       return await this.repoRepository.find({
         where: {
@@ -107,7 +107,7 @@ export class DBService {
         },
       })
     } catch (error) {
-      this.logger.error(`getRepositoriesById:_ ${f(error)}`)
+      this.logger.error('getRepositoriesByUserId', error)
       throw new Error(error)
     }
   }
@@ -119,7 +119,7 @@ export class DBService {
         where: { id },
       })
     } catch (error) {
-      this.logger.error(`findRepositoryById:_ ${f(error)}`)
+      this.logger.error('findRepositoryById', error)
       throw new Error(error)
     }
   }
@@ -131,7 +131,7 @@ export class DBService {
         where: { url, user: userId ? { id: userId } : IsNull() },
       })
     } catch (error) {
-      this.logger.error(`findRepository:_ ${f(error)}`)
+      this.logger.error('findRepository', error)
       throw new Error(error)
     }
   }
@@ -153,7 +153,7 @@ export class DBService {
       await this.repoRepository.save(newRepository)
       return newRepository
     } catch (error) {
-      this.logger.error(`createRepository:_ ${f(error)}`)
+      this.logger.error('createRepository', error)
       throw new Error(error)
     }
   }
@@ -166,7 +166,7 @@ export class DBService {
     try {
       return await this.repoRepository.update(repositoryId, updateRepositoryDto)
     } catch (error) {
-      this.logger.error(`updateRepository:_ ${f(error)}`)
+      this.logger.error('updateRepository', error)
       throw new Error(error)
     }
   }
@@ -176,7 +176,7 @@ export class DBService {
     try {
       return await this.repoRepository.delete(repositoryId)
     } catch (error) {
-      this.logger.error(`removeRepository:_ ${f(error)}`)
+      this.logger.error('removeRepository', error)
       throw new Error(error)
     }
   }
@@ -198,7 +198,7 @@ export class DBService {
       await this.datasRepository.save(newDatas)
       return newDatas
     } catch (error) {
-      this.logger.error(`createDataByRepository:_ ${f(error)}`)
+      this.logger.error('createDataByRepository', error)
       throw new Error(error)
     }
   }
@@ -210,20 +210,20 @@ export class DBService {
         where: { id: dataId },
       })
     } catch (error) {
-      this.logger.error(`getDataById:_ ${f(error)}`)
+      this.logger.error('getDataById', error)
       throw new Error(error)
     }
   }
 
   async getDatasByRepositoryId(repositoryId: string) {
-    this.logger.log('getDatas')
+    this.logger.log('getDatasByRepositoryId')
     try {
       return await this.datasRepository.findOne({
         relations: ['repository'],
         where: { repository: { id: repositoryId } },
       })
     } catch (error) {
-      this.logger.error(`getDatas:_ ${f(error)}`)
+      this.logger.error('getDatasByRepositoryId', error)
       throw new Error(error)
     }
   }
@@ -233,7 +233,7 @@ export class DBService {
     try {
       return await this.datasRepository.update(dataId, updateDataDto)
     } catch (error) {
-      this.logger.error(`updateDatas:_ ${f(error)}`)
+      this.logger.error('updateDatas', error)
       throw new Error(error)
     }
   }

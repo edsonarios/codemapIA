@@ -1,13 +1,13 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreateLoginDto } from './dto/create-login.dto'
 import { DBService } from '../db/db.service'
-import { f } from '../../common/nestConfig/logger'
+import { VercelLogger } from '../../common/nestConfig/logger'
 import * as bcrypt from 'bcrypt'
 import { CreateUserDto } from '../users/dto/create-user.dto'
 
 @Injectable()
 export class LoginService {
-  private readonly logger = new Logger(LoginService.name)
+  private readonly logger = new VercelLogger(LoginService.name)
   constructor(private readonly dbService: DBService) {}
 
   async login(createLoginDto: CreateLoginDto) {
@@ -31,7 +31,7 @@ export class LoginService {
         throw new BadRequestException('Email not registered')
       }
     } catch (error) {
-      this.logger.error(`login:_ ${f(error)}`)
+      this.logger.error('login', error)
       throw error
     }
   }
@@ -57,7 +57,7 @@ export class LoginService {
       }
       return user
     } catch (error) {
-      this.logger.error(`loginByProvider:_ ${f(error)}`)
+      this.logger.error('loginByProvider', error)
       throw error
     }
   }
