@@ -26,7 +26,7 @@ export async function getDescriptionByIA(
     })
     return text
   } catch (error) {
-    logger.error(`error getDescriptionByIA:_ ${error}`)
+    logger.error('getDescriptionByIA', error)
     return ''
   }
 }

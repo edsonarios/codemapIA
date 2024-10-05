@@ -86,7 +86,7 @@ export class DBService {
           createdAt: 'ASC',
         },
       })
-      this.logger.log(`response:_ ${response.length}`)
+      this.logger.log('response', response.length)
 
       return response
     } catch (error) {
