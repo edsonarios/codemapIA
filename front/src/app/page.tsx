@@ -189,7 +189,7 @@ export default function Home() {
               setErrorRepoUrl('')
               setRepoUrl(e.target.value)
             }}
-            placeholder="https://github.com/midudev/hackaton-vercel-2024"
+            placeholder="https://github.com/edsonarios/reaction-time-test"
           />
           {errorRepoUrl !== '' && (
             <p className="text-red-500 absolute mt-11">{errorRepoUrl}</p>

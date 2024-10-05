@@ -149,7 +149,7 @@ export default function GraphPage() {
           className="absolute top-0 right-0 flex flex-col items-center mt-8 mr-2"
         >
           <label htmlFor="api-key" className="text-sm mb-2 text-yellow-500">
-            OpenAI API Key not found. Please enter your API Key
+            Enter your OpenAI API Key
           </label>
           <div className="flex flex-row justify-center items-center">
             <div className="flex flex-col relative">
