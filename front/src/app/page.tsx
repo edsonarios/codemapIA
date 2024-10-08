@@ -123,7 +123,6 @@ export default function Home() {
     })
   }, [])
 
-  if (status === 'loading') return <div>Loading...</div>
   return (
     <main className="relative flex min-h-screen flex-col items-center p-24 h-full">
       <div
