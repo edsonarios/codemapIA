@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import extract from 'extract-zip' // work in prod
-// import * as extract from 'extract-zip'
+// import extract from 'extract-zip' // work in prod
+import * as extract from 'extract-zip'
 import {
   Injectable,
   InternalServerErrorException,
@@ -91,23 +91,41 @@ export class RepositoriesService {
           }
         }
 
-        const downloadUrl = `${url}/archive/refs/heads/main.zip`
-        const response = await axios.get(downloadUrl, {
-          responseType: 'arraybuffer',
-        })
-        fs.writeFileSync(zipPath, response.data)
-        await extract(zipPath, { dir: cloneDir })
-        fs.unlinkSync(zipPath)
+        const branchesToTry = ['main', 'master', 'develop', 'feature']
+        let branchFound = false
+        let branchNameFound = 'main'
+        for (const branch of branchesToTry) {
+          try {
+            this.logger.log(`Trying to download from branch: ${branch}`)
+            await this.downloadAndExtractRepo(url, zipPath, cloneDir, branch)
+            branchFound = true
+            branchNameFound = branch
+            break
+          } catch (error: any) {
+            if (error.response && error.response.status === 404) {
+              this.logger.warn(
+                `Branch "${branch}" not found for repository: ${url}`,
+              )
+              continue
+            } else {
+              throw new Error(
+                `Error downloading or extracting repository for branch "${branch}".`,
+              )
+            }
+          }
+        }
+        if (!branchFound) {
+          throw new Error(`No branches found for repository: ${url}`)
+        }
 
         const { structure, contentFiles, nodesAndEdges } =
-          await processRepository(`${repoName}-main`)
+          await processRepository(`${repoName}-${branchNameFound}`)
 
         const description = await getDescriptionByIA(
           url,
           structure,
           contentFiles,
         )
-        console.log('description', description)
         const newRepository = await this.dbService.createRepository(
           repositoryName,
           url,
@@ -121,15 +139,36 @@ export class RepositoriesService {
           nodesAndEdges,
         )
 
-        // fs.rmdirSync(path.resolve(cloneDir, `${repositoryName}-main`), {
-        fs.rmSync(path.resolve(cloneDir, `${repositoryName}-main`), {
-          recursive: true,
-        })
+        fs.rmSync(
+          path.resolve(cloneDir, `${repositoryName}-${branchNameFound}`),
+          {
+            recursive: true,
+          },
+        )
         return { id: newRepository.id }
       }
     } catch (error: any) {
       throw error
     }
+  }
+
+  async downloadAndExtractRepo(
+    url: string,
+    zipPath: string,
+    cloneDir: string,
+    branch: string,
+  ) {
+    const downloadUrl = `${url}/archive/refs/heads/${branch}.zip`
+
+    const response = await axios.get(downloadUrl, {
+      responseType: 'arraybuffer',
+    })
+
+    fs.writeFileSync(zipPath, response.data)
+
+    await extract(zipPath, { dir: cloneDir })
+
+    fs.unlinkSync(zipPath)
   }
 
   findOne(id: string) {
